@@ -1,6 +1,5 @@
 package com.smartcareer.careerguidancebackend.service;
 
-
 import com.smartcareer.careerguidancebackend.model.User;
 import com.smartcareer.careerguidancebackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,18 @@ public class UserService {
     private UserRepository userRepository;
 
     public User saveUser(User user) {
+        // Check for duplicate username
+        Optional<User> existingByUsername = userRepository.findByUsername(user.getUsername());
+        if (existingByUsername.isPresent()) {
+            throw new RuntimeException("Username '" + user.getUsername() + "' already exists.");
+        }
+
+        // Check for duplicate email
+        Optional<User> existingByEmail = userRepository.findByEmail(user.getEmail());
+        if (existingByEmail.isPresent()) {
+            throw new RuntimeException("Email '" + user.getEmail() + "' already exists.");
+        }
+
         return userRepository.save(user);
     }
 
@@ -30,4 +41,3 @@ public class UserService {
         userRepository.deleteById(id);
     }
 }
-
