@@ -93,4 +93,10 @@ public class UserService {
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+    }
+
 }
