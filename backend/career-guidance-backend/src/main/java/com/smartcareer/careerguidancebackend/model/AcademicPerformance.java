@@ -16,8 +16,10 @@ public class AcademicPerformance {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "student_id")
-    private Integer studentId;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
+    private StudentProfile student;
+
 
     private String subject;
 

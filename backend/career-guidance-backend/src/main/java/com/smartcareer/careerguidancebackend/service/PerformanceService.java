@@ -21,17 +21,27 @@ public class PerformanceService {
     @Autowired
     private PerformanceSummaryRepository summaryRepo;
 
-    public List<AcademicPerformance> getAcademicPerformanceByStudent(Integer studentId) {
-        return academicRepo.findByStudentId(studentId);
+    @Autowired
+    private StudentProfileRepository studentRepo;
+
+    public List<AcademicPerformance> getAcademicPerformanceByStudent(Long studentId) {
+        StudentProfile student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        return academicRepo.findByStudent(student);
     }
 
-    public List<SkillAssessment> getSkillAssessmentsByStudent(Integer studentId) {
-        return skillRepo.findByStudentId(studentId);
+    public List<SkillAssessment> getSkillAssessmentsByStudent(Long studentId) {
+        StudentProfile student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+        return skillRepo.findByStudent(student);
     }
 
-    public PerformanceSummary generatePerformanceSummary(Integer studentId) {
-        List<AcademicPerformance> academics = academicRepo.findByStudentId(studentId);
-        List<SkillAssessment> skills = skillRepo.findByStudentId(studentId);
+    public PerformanceSummary generatePerformanceSummary(Long studentId) {
+        StudentProfile student = studentRepo.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        List<AcademicPerformance> academics = academicRepo.findByStudent(student);
+        List<SkillAssessment> skills = skillRepo.findByStudent(student);
 
         double avgGrade = academics.stream()
                 .mapToDouble(a -> gradeToNumeric(a.getGrade()))
@@ -44,12 +54,10 @@ public class PerformanceService {
                 .map(SkillAssessment::getSkillName)
                 .collect(Collectors.joining(", "));
 
-        PerformanceSummary summary = summaryRepo.findByStudentId(studentId);
-        if (summary == null) {
-            summary = new PerformanceSummary();
-            summary.setStudentId(studentId);
-        }
+        PerformanceSummary summary = summaryRepo.findByStudent(student);
+        if (summary == null) summary = new PerformanceSummary();
 
+        summary.setStudent(student);
         summary.setAverageGrade(avgGrade);
         summary.setTopSkills(topSkills);
         summary.setUpdatedOn(LocalDate.now());
@@ -69,4 +77,3 @@ public class PerformanceService {
         };
     }
 }
-

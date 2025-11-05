@@ -18,8 +18,10 @@ public class PerformanceSummary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "student_id")
-    private Integer studentId;
+    @ManyToOne
+    @JoinColumn(name = "student_id", nullable = false)
+    private StudentProfile student;
+
 
     @Column(name = "average_grade")
     private Double averageGrade;

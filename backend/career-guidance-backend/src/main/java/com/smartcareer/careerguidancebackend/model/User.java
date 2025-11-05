@@ -1,6 +1,8 @@
 package com.smartcareer.careerguidancebackend.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore; // hide password in JSON
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "users")
@@ -16,12 +18,23 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @JsonIgnore
     @Column(nullable = false)
     private String password;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    // 🔹 Relationship with StudentProfile
+    @JsonBackReference("student-user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private StudentProfile studentProfile;
+
+    // 🔹 Relationship with CounselorProfile (this was missing)
+    @JsonBackReference("counselor-user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private CounselorProfile counselorProfile;
 
     // Constructors
     public User() {}
@@ -48,5 +61,10 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
-}
 
+    public StudentProfile getStudentProfile() { return studentProfile; }
+    public void setStudentProfile(StudentProfile studentProfile) { this.studentProfile = studentProfile; }
+
+    public CounselorProfile getCounselorProfile() { return counselorProfile; }
+    public void setCounselorProfile(CounselorProfile counselorProfile) { this.counselorProfile = counselorProfile; }
+}

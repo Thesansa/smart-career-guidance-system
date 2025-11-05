@@ -1,11 +1,14 @@
 package com.smartcareer.careerguidancebackend.service;
 
+import com.smartcareer.careerguidancebackend.model.Role;
 import com.smartcareer.careerguidancebackend.model.User;
+import com.smartcareer.careerguidancebackend.repository.RoleRepository;
 import com.smartcareer.careerguidancebackend.repository.UserRepository;
 import com.smartcareer.careerguidancebackend.config.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +17,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;  // ✅ added
 
     @Autowired
     private JwtService jwtService;
@@ -40,13 +46,18 @@ public class UserService {
             throw new RuntimeException("Email '" + user.getEmail() + "' already exists.");
         }
 
-        // ✅ ENCRYPT THE PASSWORD BEFORE SAVING
+        // ✅ Fetch existing role from DB (avoid transient instance issue)
+        Role existingRole = roleRepository.findById(user.getRole().getId())
+                .orElseThrow(() -> new RuntimeException("Role not found with ID: " + user.getRole().getId()));
+        user.setRole(existingRole);
+
+        // ✅ Encrypt password before saving
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
         System.out.println("Password (after encryption): " + user.getPassword());
 
         User savedUser = userRepository.save(user);
-        System.out.println("✅ User saved with ID: " + savedUser.getId());
+        System.out.println("✅ User saved with ID: " + savedUser.getId() + " and role: " + savedUser.getRole().getName());
         return savedUser;
     }
 
@@ -67,7 +78,6 @@ public class UserService {
         System.out.println("Stored encrypted password: " + user.getPassword());
         System.out.println("Input password: " + password);
 
-        // ✅ CHECK IF PASSWORD MATCHES (encrypted vs plain text)
         boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
         System.out.println("Password matches: " + passwordMatches);
 
@@ -98,5 +108,4 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
-
 }

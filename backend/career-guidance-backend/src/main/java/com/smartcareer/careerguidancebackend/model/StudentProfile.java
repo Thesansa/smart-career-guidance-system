@@ -1,6 +1,8 @@
 package com.smartcareer.careerguidancebackend.model;
 
 import jakarta.persistence.*;
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "student_profile")
@@ -10,6 +12,7 @@ public class StudentProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // primary key
 
+    @JsonBackReference // to stop endless recursion of studnt profile and user try to talk to each other
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id", referencedColumnName = "id")
     private User user; // link to the User entity (foreign key)
@@ -31,6 +34,12 @@ public class StudentProfile {
 
     @Column(nullable = false)
     private String universityName;
+
+    // 👇 NEW: link with CareerRecommendation entity
+    @JsonBackReference("career-student")
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CareerRecommendation> careerRecommendations;
+
 
     // Constructors
     public StudentProfile() {}
@@ -70,4 +79,9 @@ public class StudentProfile {
 
     public String getUniversityName() { return universityName; }
     public void setUniversityName(String universityName) { this.universityName = universityName; }
+
+    public List<CareerRecommendation> getCareerRecommendations() { return careerRecommendations; }
+    public void setCareerRecommendations(List<CareerRecommendation> careerRecommendations) {
+        this.careerRecommendations = careerRecommendations;
+    }
 }
