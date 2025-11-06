@@ -9,4 +9,5 @@ public interface StudentProfileRepository extends JpaRepository<StudentProfile, 
     // Optional helper method: find profile by user
     Optional<StudentProfile> findByUserId(Long userId);
 
+    Optional<Object> findById(Integer studentId);
 }

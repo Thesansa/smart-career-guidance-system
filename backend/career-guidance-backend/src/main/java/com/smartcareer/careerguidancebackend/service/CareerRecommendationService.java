@@ -32,7 +32,7 @@ public class CareerRecommendationService {
                 .orElseThrow(() -> new RuntimeException("Student not found with ID: " + studentId));
 
         // ✅ Fetch skills using StudentProfile reference
-        List<SkillAssessment> skillAssessments = skillAssessmentRepository.findByStudent(student);
+        List<SkillAssessment> skillAssessments = skillAssessmentRepository.findByStudentOrderByAssessmentDateAsc(student);
         List<String> studentSkills = skillAssessments.stream()
                 .map(SkillAssessment::getSkillName)
                 .collect(Collectors.toList());

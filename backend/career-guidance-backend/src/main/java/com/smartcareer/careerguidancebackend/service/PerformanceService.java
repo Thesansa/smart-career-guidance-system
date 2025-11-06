@@ -33,7 +33,9 @@ public class PerformanceService {
     public List<SkillAssessment> getSkillAssessmentsByStudent(Long studentId) {
         StudentProfile student = studentRepo.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
-        return skillRepo.findByStudent(student);
+        return skillRepo.findByStudentOrderByAssessmentDateAsc(student);
+
+
     }
 
     public PerformanceSummary generatePerformanceSummary(Long studentId) {
@@ -41,7 +43,7 @@ public class PerformanceService {
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         List<AcademicPerformance> academics = academicRepo.findByStudent(student);
-        List<SkillAssessment> skills = skillRepo.findByStudent(student);
+        List<SkillAssessment> skills = skillRepo.findByStudentOrderByAssessmentDateAsc(student);
 
         double avgGrade = academics.stream()
                 .mapToDouble(a -> gradeToNumeric(a.getGrade()))

@@ -13,5 +13,6 @@ public interface SkillAssessmentRepository extends JpaRepository<SkillAssessment
     List<String> findSkillsByStudent(StudentProfile student);
 
     // ✅ Get all skill assessments for the student
-    List<SkillAssessment> findByStudent(StudentProfile student);
+    List<SkillAssessment> findByStudentOrderByAssessmentDateAsc(StudentProfile student);
+
 }
