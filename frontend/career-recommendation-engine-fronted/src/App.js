@@ -1,25 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import CareerRecommendationDashboard from "./components/CareerRecommendationDashboard";
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div>
+            <header className="app-header">
+                <h1>Smart Career Guidance System</h1>
+                <p>Career Recommendation Engine</p>
+            </header>
+            <CareerRecommendationDashboard />
+        </div>
+    );
 }
 
 export default App;
