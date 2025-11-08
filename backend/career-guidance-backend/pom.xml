@@ -62,8 +62,8 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+<<<<<<< Updated upstream
         <dependency>
-
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
             <version>0.11.5</version>
@@ -76,6 +76,36 @@
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId> <!-- for JSON parsing -->
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+
+=======
+
+        <!-- Lombok (compile-time) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- JJWT (JWT support) -->
+        <dependency>
+>>>>>>> Stashed changes
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.11.5</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+<<<<<<< Updated upstream
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
             <scope>runtime</scope>
@@ -89,6 +119,12 @@
         </dependency>
 
 
+=======
+            <artifactId>jjwt-jackson</artifactId> <!-- for JSON parsing -->
+            <version>0.11.5</version>
+            <scope>runtime</scope>
+        </dependency>
+>>>>>>> Stashed changes
 
     </dependencies>
 
