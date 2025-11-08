@@ -1,15 +1,9 @@
-import React from "react";
-import CareerRecommendationDashboard from "./components/CareerRecommendationDashboard";
-import "./App.css";
+import CareerRecommendation from "./components/recommendation/CareerRecommendation";
 
-function App() {
+function App(){
     return (
-        <div>
-            <header className="app-header">
-                <h1>Smart Career Guidance System</h1>
-                <p>Career Recommendation Engine</p>
-            </header>
-            <CareerRecommendationDashboard />
+        <div className="App">
+            <CareerRecommendation />
         </div>
     );
 }

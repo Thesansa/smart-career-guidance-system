@@ -1,0 +1,169 @@
+/* force root to fill viewport */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+}
+
+/* variables (tweak sizes if needed) */
+:root {
+    --hero-h: 160px;    /* make header short so content fits */
+    --card-w: 560px;    /* card width */
+    --card-radius: 12px;
+}
+
+/* page container: full viewport and hide overflow */
+.rec-page {
+    height: 100vh;          /* lock to viewport */
+    overflow: hidden;       /* prevent page scroll on desktop */
+    background: #f5f7f8;
+    box-sizing: border-box;
+}
+
+/* hero: top blue area */
+.hero {
+    height: var(--hero-h);
+    background: linear-gradient(90deg, #0b74e6, #12b0ff); /* 🔵 Blue gradient */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 12px 20px;
+    box-shadow: inset 0 -24px 40px rgba(0, 0, 0, 0.05);
+}
+
+.hero-title {
+    font-size: 36px;
+    margin: 0 0 8px;
+    font-weight: 700;
+}
+.hero-sub {
+    margin: 0;
+    opacity: 0.95;
+    font-size: 16px;
+}
+
+/* wrapper holds illustrations and the card; fill remaining viewport */
+.rec-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    height: calc(100vh - var(--hero-h));
+    padding: 20px 80px;
+}
+
+
+/* Left Illustration */
+.bg-left {
+    flex: 0 0 640px;                  /* bigger width like your image */
+    width: 640px;
+    max-height: 520px;                /* keeps proportions consistent */
+    object-fit: contain;
+    margin-left: -100px;              /* shift a bit left for alignment */
+    margin-top: 10px;
+    z-index: 1;
+}
+
+
+/* left illustration: fixed width and constrained height so it can't push page */
+.bg-left {
+    flex: 0 0 360px;                              /* take fixed horizontal space */
+    width: 360px;
+    max-height: calc(100vh - var(--hero-h) - 40px); /* ensure it never grows taller than remaining area */
+}
+
+/* right illustration: same treatment (adjust width if needed) */
+.bg-right {
+    flex: 0 0 300px;
+    width: 300px;
+    max-height: calc(100vh - var(--hero-h) - 40px);
+}
+
+/* the white card (center) */
+/* White card with shadow */
+.rec-card {
+    flex: 0 0 640px;                  /* make the card bigger */
+    width: 640px;
+    background: #ffffff;
+    border-radius: 0px;               /* square shape */
+    padding: 40px 48px;               /* more space inside */
+    box-shadow: 0 25px 80px rgba(11, 116, 230, 0.25); /* deep blue shadow */
+    border: 1px solid rgba(11, 20, 30, 0.05);
+    z-index: 3;
+    box-sizing: border-box;
+}
+
+/* small visual tweak for the CTA button if present */
+.rec-card .btn-cta {
+    display:inline-block;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight:700;
+    font-size:16px;
+    background: linear-gradient(90deg,#0b74e6,#12b0ff);
+    color:#fff;
+    border:none;
+    cursor:pointer;
+    box-shadow: 0 12px 28px rgba(11,116,230,0.12);
+}
+
+/* If something still pushes page (extra margin bottom), clamp the body bottom spacing */
+body {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+/* Responsive: allow scrolling on small screens (phone/tablet) */
+@media (max-width: 900px) {
+    .rec-page {
+        height: auto;        /* allow the page to grow and scroll */
+        overflow: auto;
+    }
+    .hero { height: 140px; }
+    .rec-wrap {
+        flex-direction: column;
+        height: auto;
+        margin-top: -20px;
+        padding: 12px;
+        gap: 12px;
+    }
+    .bg-left, .bg-right { width: 260px; max-height: 260px; }
+    .rec-card { width: 100%; max-height: none; padding: 18px; overflow: visible; }
+}
+.rec-card button,
+.btn-primary {
+    background: linear-gradient(90deg, #0b74e6, #12b0ff);
+    color: white;
+    border: none;
+    padding: 16px 34px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+    box-shadow: 0 12px 32px rgba(11, 116, 230, 0.25);
+    transition: all 0.3s ease;
+
+}
+.rec-card button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(11, 116, 230, 0.35);
+}
+
+/* Typography inside the card */
+.rec-card h2, .rec-card h1 {
+    font-size: 34px;
+    margin-bottom: 18px;
+    color: #0b2b3a;
+}
+
+.rec-card p {
+    font-size: 17px;
+    color: #404d55;
+    margin-bottom: 26px;
+}
+.bg-left {
+    position: relative;
+    top: -40px;                      /* move upward to overlap */
+}
