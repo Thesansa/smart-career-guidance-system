@@ -1,0 +1,150 @@
+/* StudentProfile.css - adjust sizes as needed */
+:root {
+    --hero-h: 150px;       /* smaller blue header */
+    --card-w: 560px;       /* smaller card width */
+    --card-radius: 12px;
+    --accent1: linear-gradient(90deg, #0b74e6, #12b0ff);
+}
+
+/* page & hero */
+.student-page {
+    position: relative;
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    min-height: 100vh;
+    background: #f5f7f8;
+}
+
+/* top blue hero */
+.hero {
+    height: var(--hero-h);
+    background: var(--accent1);
+    color: white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding: 28px 16px;
+    box-shadow: inset 0 -24px 40px rgba(0,0,0,0.05);
+}
+.hero-title {
+    font-size: 38px;
+    margin: 0 0 8px;
+    font-weight: 700;
+}
+.hero-sub {
+    margin: 0;
+    opacity: 0.95;
+}
+
+/* background illustrations (absolute) */
+.bg-left, .bg-right {
+    position: absolute;
+    bottom: 40px;
+    width: 280px;          /* reduced from 320px */
+    pointer-events: none;
+    opacity: 0.95;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.bg-left {
+    left: 60px;
+    transform: translateY(0);
+}
+
+.bg-right {
+    right: 60px;
+    transform: translateY(0);
+}
+
+/* wrapper centers card */
+.profile-wrap{
+    position: relative;
+    z-index: 2; /* above bg images */
+    display:flex;
+    justify-content:center;
+    margin-top: -60px; /* pull card up over hero */
+    padding:30px 80px;
+}
+
+/* the white card */
+.profile-card {
+    width: min(88%, var(--card-w));
+    background: white;
+    border-radius: var(--card-radius);
+    padding: 24px 28px;    /* reduced from 30px+ */
+    box-shadow: 0 12px 28px rgba(11, 20, 30, 0.08);
+    border: 1px solid rgba(11, 20, 30, 0.02);
+}
+
+.profile-card h2{
+    margin:0 0 8px;
+    font-size: 26px;
+    color: #0b2b3a;
+}
+
+.muted{
+    margin:0 0 18px;
+    color: #6e7b86;
+}
+
+/* form layout - stacked inputs full width */
+.profile-form label{
+    display:block;
+    margin-bottom:16px;
+    font-weight:600;
+    color:#20323a;
+}
+.profile-form label span{
+    display:block;
+    font-size:14px;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.profile-form input{
+    width:100%;
+    box-sizing:border-box;
+    padding:12px 14px;
+    border-radius:8px;
+    border:1px solid #e6edf2;
+    background: #fbfdff;
+    outline:none;
+    font-size:15px;
+}
+.profile-form input:focus{
+    box-shadow: 0 6px 18px rgba(11,116,230,0.12);
+    border-color:#0b74e6;
+}
+
+/* primary button */
+.btn-primary{
+    display:block;
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border-radius:10px;
+    background: linear-gradient(90deg,#0b74e6,#12b0ff);
+    color:white;
+    border:none;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow: 0 8px 22px rgba(11,116,230,0.18);
+}
+
+/* responsive: shrink background images on small screens */
+@media (max-width: 900px){
+    .bg-left, .bg-right{ width: 200px; bottom: 10px; opacity: 0.9; }
+    .bg-left { left: 12px; }
+    .bg-right { right: 12px; }
+    .hero-title{ font-size: 28px; }
+    .profile-wrap{ margin-top:-40px; padding-bottom:40px; }
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* stops small scroll bars */
+}

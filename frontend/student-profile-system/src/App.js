@@ -1,16 +1,12 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProfileForm from "./components/ProfileForm";
-import Login from "./components/Login";
+import StudentProfile from "./components/StudentProfile";
+import "./App.css"; // keep your global styles if any
 
-function App() {
+function App(){
     return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/profile" element={<ProfileForm />} />
-            </Routes>
-        </Router>
+        <div className="App">
+            <StudentProfile />
+        </div>
     );
 }
 

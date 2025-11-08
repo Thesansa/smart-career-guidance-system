@@ -1,43 +1,34 @@
-import React, { useEffect, useState } from "react";
-import api from "../services/api";
+import React from "react";
+import "./../App.css";
 
-const ProfileForm = () => {
-    const [profile, setProfile] = useState({
-        name: "",
-        contact: "",
-        gender: "",
-        university: "",
-    });
-
-    const userId = localStorage.getItem("userId"); // saved after login
-
-    useEffect(() => {
-        api.get(`/student-profiles/user/${userId}`)
-            .then(res => setProfile(res.data))
-            .catch(err => console.error(err));
-    }, [userId]);
-
-    const handleChange = (e) => {
-        setProfile({ ...profile, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        api.post("/student-profiles/add", profile)
-            .then(() => alert("Profile updated!"))
-            .catch(err => alert("Error updating profile"));
-    };
-
+export default function ProfileForm(){
     return (
-        <form onSubmit={handleSubmit}>
-            <h2>My Profile</h2>
-            <input name="name" value={profile.name} onChange={handleChange} placeholder="Name" />
-            <input name="contact" value={profile.contact} onChange={handleChange} placeholder="Contact" />
-            <input name="gender" value={profile.gender} onChange={handleChange} placeholder="Gender" />
-            <input name="university" value={profile.university} onChange={handleChange} placeholder="University" />
-            <button type="submit">Save</button>
-        </form>
-    );
-};
+        <div className="container-centered">
+            <div className="card profile-grid">
+                <div>
+                    <h2 className="h2">Student profile</h2>
+                    <p className="muted">Edit your personal & academic details.</p>
 
-export default ProfileForm;
+                    <label>Full name</label>
+                    <input className="input" placeholder="Full name" />
+
+                    <label>Email</label>
+                    <input className="input" placeholder="Email" />
+
+                    <label>University</label>
+                    <input className="input" placeholder="University" />
+
+                    <div style={{marginTop:12}}>
+                        <button className="btn-primary">Save profile</button>
+                    </div>
+                </div>
+
+                <aside className="side-card">
+                    <h3 className="h2">Quick info</h3>
+                    <p className="muted">Role: STUDENT</p>
+                    <p className="muted">You can view & edit your own profile.</p>
+                </aside>
+            </div>
+        </div>
+    );
+}
