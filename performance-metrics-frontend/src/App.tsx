@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 
+
 /**
- * Simple Performance & Metrics frontend (single-file)
- * - Student: view own grades, skills, summary
- * - Counselor: select student and add/update grade
- * - Admin: view any student
+ * Performance & Academic UI
+ * - Single file frontend (React + TSX)
+ * - Uses VITE_API_BASE (import.meta.env.VITE_API_BASE) or fallback to localhost
  *
- * Uses fetch against import.meta.env.VITE_API_BASE (set this in .env)
+ * Endpoints expected:
+ * GET  /api/performance/{studentId}            -> grades array
+ * GET  /api/performance/skills/{studentId}     -> skills array
+ * GET  /api/performance/summary/{studentId}    -> latest summary (object)
+ * POST /api/performance/{studentId}            -> add grade (body: {subject,term,grade})
+ * PUT  /api/performance/{studentId}            -> update grade (body: {id,subject,term,grade})
+ * POST /api/performance/summary/{studentId}    -> generate summary (server calculates)
  */
 
 type Grade = { id?: number; subject: string; term?: string; grade: number };
@@ -18,38 +24,44 @@ const API_BASE = (import.meta.env.VITE_API_BASE as string) || "http://localhost:
 
 export default function App(): JSX.Element {
   const [role, setRole] = useState<"STUDENT" | "COUNSELOR" | "ADMIN">("STUDENT");
-  const [userId, setUserId] = useState<string>("1"); // supply logged-in user id
+  const [userId] = useState<string>("1"); // pretend logged-in user
   const [selectedStudent, setSelectedStudent] = useState<string>(userId);
+
   const [grades, setGrades] = useState<Grade[]>([]);
   const [skills, setSkills] = useState<Skill[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state for counselor add/update
+  // form state for add/update grade
   const [form, setForm] = useState<Grade>({ subject: "", term: "", grade: 0 });
 
-  // helper: build auth headers (if you have JWT saved in localStorage)
+  // simple student list (replace or fetch in real app)
+  const studentOptions = [
+    { id: "1", name: "Student One" },
+    { id: "2", name: "Student Two" },
+    { id: "3", name: "Student Three" },
+  ];
+
   const getHeaders = () => {
     const token = localStorage.getItem("token");
     return token ? { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } : { "Content-Type": "application/json" };
   };
 
-  // fetch functions
   async function fetchAll(studentId: string) {
     setLoading(true);
     setError(null);
     try {
-      const perfR = await fetch(`${API_BASE}/api/performance/${encodeURIComponent(studentId)}`, { headers: getHeaders() });
+      const perf = await fetch(`${API_BASE}/api/performance/${encodeURIComponent(studentId)}`, { headers: getHeaders() });
       const skillsR = await fetch(`${API_BASE}/api/performance/skills/${encodeURIComponent(studentId)}`, { headers: getHeaders() });
-      const summaryR = await fetch(`${API_BASE}/api/performance/summary/${encodeURIComponent(studentId)}`, { headers: getHeaders() });
+      const sumR = await fetch(`${API_BASE}/api/performance/summary/${encodeURIComponent(studentId)}`, { headers: getHeaders() });
 
-      if (!perfR.ok && perfR.status !== 404) throw new Error(`Grades fetch failed: ${perfR.status}`);
+      if (!perf.ok && perf.status !== 404) throw new Error(`Grades fetch failed: ${perf.status}`);
       if (!skillsR.ok && skillsR.status !== 404) throw new Error(`Skills fetch failed: ${skillsR.status}`);
 
-      const gradesData = perfR.ok ? (await perfR.json()) : [];
+      const gradesData = perf.ok ? (await perf.json()) : [];
       const skillsData = skillsR.ok ? (await skillsR.json()) : [];
-      const summaryData = summaryR.ok ? (await summaryR.json()) : null;
+      const summaryData = sumR.ok ? (await sumR.json()) : null;
 
       setGrades(Array.isArray(gradesData) ? gradesData : []);
       setSkills(Array.isArray(skillsData) ? skillsData : []);
@@ -65,13 +77,11 @@ export default function App(): JSX.Element {
   }
 
   useEffect(() => {
-    // on role/student change, load data
     if (selectedStudent) fetchAll(selectedStudent);
   }, [selectedStudent]);
 
-  // counselor: add grade
-  async function handleAddGrade(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleAddGrade(e?: React.FormEvent) {
+    e?.preventDefault();
     if (!selectedStudent) return alert("Select a student first");
     try {
       const res = await fetch(`${API_BASE}/api/performance/${encodeURIComponent(selectedStudent)}`, {
@@ -83,18 +93,17 @@ export default function App(): JSX.Element {
         const txt = await res.text();
         throw new Error(`Add failed: ${res.status} ${txt}`);
       }
-      // reload
       setForm({ subject: "", term: "", grade: 0 });
       await fetchAll(selectedStudent);
-      alert("Grade added successfully");
+      alert("Grade added");
     } catch (err: any) {
       alert("Error: " + err.message);
     }
   }
 
-  // counselor: update grade (requires grade id)
   async function handleUpdateGrade(id?: number) {
-    if (!id) return alert("No grade id to update");
+    if (!selectedStudent) return alert("Select a student first");
+    if (!id) return alert("Provide grade id in the form before updating (form.id)");
     try {
       const res = await fetch(`${API_BASE}/api/performance/${encodeURIComponent(selectedStudent)}`, {
         method: "PUT",
@@ -113,7 +122,6 @@ export default function App(): JSX.Element {
     }
   }
 
-  // generate summary (counselor/admin)
   async function handleGenerateSummary() {
     if (!selectedStudent) return;
     try {
@@ -129,21 +137,24 @@ export default function App(): JSX.Element {
     }
   }
 
-  // simple mock student list (in real app fetch from API)
-  const studentOptions = [
-    { id: "1", name: "Student One" },
-    { id: "2", name: "Student Two" },
-    { id: "3", name: "Student Three" },
-  ];
+  // small helper to prefill update when user clicks a grade row (optional)
+  function fillUpdate(g: Grade) {
+    setForm({ id: g.id, subject: g.subject, term: g.term, grade: g.grade });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }
 
   return (
     <div className="perf-app">
-      <header className="perf-header">
-        <div>
-          <h1>📊 Performance & Metrics</h1>
-          <p className="subtitle">Track academic grades & skill assessments</p>
+      <header className="perf-topbar">
+        <div className="top-left">
+          <div className="logo">📊</div>
+          <div>
+            <h1>Performance & Metrics</h1>
+            <div className="subtitle">Track academic grades & skill assessments</div>
+          </div>
         </div>
-        <div className="role-switch">
+
+        <div className="role-box">
           <label>Role:</label>
           <select value={role} onChange={(e) => setRole(e.target.value as any)}>
             <option value="STUDENT">STUDENT</option>
@@ -155,55 +166,47 @@ export default function App(): JSX.Element {
 
       <main className="perf-main">
         <aside className="left-col">
-          <div className="card">
+          <div className="card selector-card" style={{ minHeight: '440px' }} >
             <h3>Student Selector</h3>
-            <p>
-              {role === "STUDENT" ? "Viewing your own performance" : role === "COUNSELOR" ? "Pick a student to edit" : "Admin: view any student"}
-            </p>
-            <select value={selectedStudent} onChange={(e) => setSelectedStudent(e.target.value)}>
+            <div className="illustration">
+
+              <img src="student-illustration.png" alt="student" onError={(e)=>{ (e.currentTarget as HTMLImageElement).style.opacity="0.0"; }} />
+            </div>
+
+            <div className="student-list">
               {studentOptions.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name} ({s.id})
-                </option>
+                <button
+                  key={s.id}
+                  className={`student-item ${selectedStudent === s.id ? "active" : ""}`}
+                  onClick={() => setSelectedStudent(s.id)}
+                >
+                  <div className="avatar">{s.name.split(" ").map(n=>n[0]).slice(0,2).join("")}</div>
+                  <div className="s-label">{s.name}</div>
+                </button>
               ))}
-            </select>
+            </div>
 
             <div className="actions">
-              {(role === "COUNSELOR" || role === "ADMIN") && (
-                <button className="btn" onClick={handleGenerateSummary}>
-                  Generate Summary
-                </button>
+              {(role === "COUNSELOR" || role === "ADMIN") ? (
+                <button className="btn primary" onClick={handleGenerateSummary}>Generate Summary</button>
+              ) : (
+                <button className="btn primary" onClick={() => fetchAll(selectedStudent)}>Refresh</button>
               )}
             </div>
           </div>
 
-          <div className="card">
-            <h3>Summary</h3>
-            {loading ? (
-              <div>Loading...</div>
-            ) : summary ? (
-              <div>
-                <p>
-                  <strong>Average grade:</strong> {summary.averageGrade ?? "—"}
-                </p>
-                <p>
-                  <strong>Top skills:</strong> {(summary.topSkills && summary.topSkills.join(", ")) || "—"}
-                </p>
-              </div>
-            ) : (
-              <p>No summary available</p>
-            )}
-          </div>
+
         </aside>
 
-        <section className="right-col">
-          <div className="card">
+        <section className="center-col">
+          <div className="card grades-card">
             <h2>Grades</h2>
             {error && <div className="error">{error}</div>}
+
             {loading ? (
               <div>Loading grades…</div>
             ) : grades.length === 0 ? (
-              <div>No grades found</div>
+              <div className="empty">No grades found</div>
             ) : (
               <table className="grades-table">
                 <thead>
@@ -215,7 +218,7 @@ export default function App(): JSX.Element {
                 </thead>
                 <tbody>
                   {grades.map((g) => (
-                    <tr key={g.id ?? `${g.subject}-${g.term}`}>
+                    <tr key={g.id ?? `${g.subject}-${g.term}`} onClick={() => fillUpdate(g)} style={{cursor: 'pointer'}}>
                       <td>{g.subject}</td>
                       <td>{g.term ?? "—"}</td>
                       <td>{g.grade}</td>
@@ -226,43 +229,51 @@ export default function App(): JSX.Element {
             )}
           </div>
 
-          <div className="card">
-            <h2>Skills</h2>
-            {skills.length === 0 ? <div>No skills</div> : <ul>{skills.map((s) => <li key={s.id ?? s.name}>{s.name} — {s.level}</li>)}</ul>}
+          <div className="card summary-large">
+                      <h3>Summary</h3>
+                      {summary ? (
+                        <div>
+                          <p><strong>Average grade:</strong> {summary.averageGrade ?? "—"}</p>
+                          <p><strong>Top skills:</strong> {(summary.topSkills && summary.topSkills.join(", ")) || "—"}</p>
+                        </div>
+                      ) : (
+                        <div>No summary ready</div>
+                      )}
+                    </div>
+        </section>
+
+        <aside className="right-col">
+          <div className="card skills-card">
+            <h3>Skills</h3>
+            {skills.length === 0 ? <div>No skills</div> : <ul>{skills.map(s => <li key={s.id ?? s.name}>{s.name}{s.level ? ` — ${s.level}` : ""}</li>)}</ul>}
           </div>
 
           {(role === "COUNSELOR" || role === "ADMIN") && (
-            <div className="card">
-              <h2>Add / Update Grade</h2>
+            <div className="card form-card">
+              <h3>Add / Update Grade</h3>
               <form onSubmit={handleAddGrade}>
-                <div className="form-row">
-                  <label>Subject</label>
-                  <input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required />
-                </div>
-                <div className="form-row">
-                  <label>Term</label>
-                  <input value={form.term} onChange={(e) => setForm({ ...form, term: e.target.value })} />
-                </div>
-                <div className="form-row">
-                  <label>Grade</label>
-                  <input type="number" value={String(form.grade)} onChange={(e) => setForm({ ...form, grade: Number(e.target.value) })} required />
-                </div>
+                <label>Subject</label>
+                <input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="Subject" required />
+
+                <label>Term</label>
+                <input value={form.term} onChange={(e) => setForm({ ...form, term: e.target.value })} placeholder="Term (eg. Mar)" />
+
+                <label>Grade</label>
+                <input type="number" value={String(form.grade)} onChange={(e) => setForm({ ...form, grade: Number(e.target.value) })} required />
 
                 <div className="form-actions">
-                  <button type="submit" className="btn">
-                    Add Grade
-                  </button>
-                  <button type="button" className="btn secondary" onClick={() => handleUpdateGrade(form.id)}>
-                    Update (by id)
-                  </button>
+                  <button type="submit" className="btn primary">Add Grade</button>
+                  <button type="button" className="btn secondary" onClick={() => handleUpdateGrade(form.id)}>Update (by id)</button>
                 </div>
               </form>
             </div>
           )}
-        </section>
+        </aside>
       </main>
 
-      <footer className="perf-footer">All API calls must include JWT in Authorization: Bearer &lt;token&gt; (server enforces roles)</footer>
+      <footer className="perf-footer">
+
+      </footer>
     </div>
   );
 }
