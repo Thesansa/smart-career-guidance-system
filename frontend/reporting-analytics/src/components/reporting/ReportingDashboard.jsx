@@ -28,6 +28,8 @@ export default function ReportingDashboard() {
                         <div className="kpi">
                             <div className="kpi-value">{overview.insights}</div>
                             <div className="kpi-label">Insights</div>
+                            git status
+
                         </div>
                     </div>
 

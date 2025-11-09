@@ -1,0 +1,50 @@
+body {
+    font-family: "Poppins", sans-serif;
+    background: #f4f6fb;
+    margin: 0;
+}
+
+.app-header {
+    background: linear-gradient(135deg, #004aad, #00bfff);
+    color: white;
+    padding: 30px;
+    text-align: center;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.recommendation-dashboard {
+    text-align: center;
+    padding: 30px;
+}
+
+.btn {
+    background: linear-gradient(135deg, #004aad, #00bfff);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.career-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 280px;
+    transition: 0.2s ease;
+}
+
+.career-card:hover {
+    transform: translateY(-5px);
+}

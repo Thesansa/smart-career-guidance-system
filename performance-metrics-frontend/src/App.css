@@ -1,0 +1,156 @@
+:root{
+  --bg: #eef6fb;
+  --card: #ffffff;
+  --primary: #2f79df;
+  --muted: #5b6b86;
+  --accent: #19a37a;
+  --shadow: rgba(17,66,150,0.08);
+}
+
+* { box-sizing: border-box; }
+html,body,#root {
+  height:100%;
+  margin:0;
+  width: 100%;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial; background: linear-gradient(180deg,#f3f8ff,#eef6fb); color:#0f1724; }
+
+/* App container */
+.perf-app {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 24px 40px;
+  box-sizing: border-box;
+}
+
+
+/* Top header bar */
+.perf-topbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  background: linear-gradient(180deg,#2f79df,#2b73d4);
+  color: white;
+  padding: 22px 26px;
+  border-radius: 12px;
+  box-shadow: 0 14px 40px rgba(30,70,160,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+  margin-bottom: 18px;
+}
+
+.top-left { display:flex; gap:12px; align-items:center; }
+.logo { width:48px; height:48px; border-radius:10px; background: rgba(255,255,255,0.12); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.perf-topbar h1 { margin:0; font-size:24px; font-weight:700; }
+.perf-topbar .subtitle { font-size:13px; opacity:0.95; margin-top:4px; color: rgba(255,255,255,0.92); }
+
+.role-box { background: white; color:#0f1724; padding:8px 12px; border-radius:10px; display:flex; gap:8px; align-items:center; }
+.role-box select { border: none; font-weight:600; }
+
+/* Grid layout */
+.perf-main {
+  display: grid;
+  grid-template-columns: 320px 1fr 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+/* Card base */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 34px var(--shadow);
+  border: 1px solid rgba(15,23,42,0.03);
+}
+
+/* Left column */
+.left-col .card { margin-bottom:12px; }
+
+.selector-card h3{
+ margin:0 0 12px 0; color:#0b2445; min-height: 240px !important; }
+ }
+ .summary-card h3, .grades-card h2{ margin:0 0 12px 0; color:#0b2445; min-height: 260px !important; }
+
+/* illustration placeholder */
+/* container keeps fixed visual area — does NOT grow the card */
+.selector-card .illustration {
+  position: relative;      /* enable absolute child positioning */
+  height: 180px;           /* visible area height — change to 120/160/220 as you like */
+  display: flex;
+  align-items: center;     /* center fallback if image not absolute */
+  justify-content: center;
+        /* hide any image overflow so card size stays same */
+  margin-bottom: 6px;
+  padding: 8px 0;
+}
+
+/* image scaled inside the fixed container without pushing layout */
+.selector-card .illustration img {
+  position: absolute;      /* remove image from flow so it won't push content */
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%); /* center perfectly */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;     /* preserve aspect ratio */
+  display: block;
+  border-radius: 4px;      /* optional */
+}
+
+
+/* student list */
+.student-list { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
+.student-item { display:flex; gap:12px; align-items:center; padding:10px 12px; border-radius:10px; background: linear-gradient(180deg,#fbfdff,#f7fbff); border: 1px solid rgba(11,96,230,0.04); cursor:pointer; text-align:left; }
+.student-item.active { box-shadow: 0 8px 20px rgba(11,102,214,0.06); background: linear-gradient(180deg,#f3f8ff,#eef7ff); }
+.student-item .avatar { width:36px; height:36px; border-radius:50%; background: #2f79df; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; }
+.student-item .s-label { font-weight:700; color:#0b2445; }
+
+/* actions */
+.actions { margin-top:14px; display:flex; }
+.btn { padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:700; }
+.btn.primary { background: linear-gradient(180deg,#2f79df,#2266d1); color:white; box-shadow: 0 8px 22px rgba(34,103,214,0.12); }
+.btn.secondary { background: #f3f6fb; border: 1px solid #e7f0ff; color:#234; }
+
+/* center column */
+.grades-card h2 { margin:0 0 12px 0; font-size:20px; color:#0b2445; min-height: 260px; }
+.grades-table { width:100%; border-collapse:collapse; background: linear-gradient(180deg,#fbfdff,#ffffff); border-radius:8px; overflow:hidden; }
+.grades-table th, .grades-table td { padding:12px 14px; border-bottom:1px solid #f1f5f9; text-align:left; }
+.grades-table th { background:#f4f7fb; font-weight:700; color:#244; }
+.grades-table tr:hover td { background: rgba(34,103,214,0.02); }
+
+/* summary large */
+.summary-large { margin-top:18px;min-height: 280px }
+
+/* right column */
+.right-col .card + .card { margin-top:16px; }
+.skills-card h3 { margin:0 0 10px 0; min-height: 200px}
+.skills-card ul { padding-left:18px; color:#21364f; }
+
+/* form card */
+.form-card label { display:block; margin-top:8px; margin-bottom:6px; color:var(--muted); font-weight:600; }
+.form-card input { width:100%; padding:10px 12px; border-radius:8px; border:1px solid #e6eefb; font-size:14px; background: #f9fbff; color: black;}
+.form-actions { display:flex; gap:10px; margin-top:12px; }
+
+/* summary small */
+.summary-card { margin-top:16px; }
+.summary-card .summary-body { color:#223; }
+
+/* footer */
+.perf-footer { margin-top:18px; text-align:center; color:var(--muted); font-size:13px; }
+
+/* responsiveness */
+@media (max-width:1100px) {
+  .perf-main { grid-template-columns: 1fr; }
+  .left-col, .center-col, .right-col { order: unset; }
+}
+
+/* Forces the left selector card taller — put at end of App.css */
+.left-col .selector-card,
+.left-col .card.selector-card,
+.selector-card.card {
+  min-height: 240px !important;
+}
+
+
