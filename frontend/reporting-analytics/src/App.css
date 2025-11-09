@@ -1,0 +1,13 @@
+.app-header {
+    background: linear-gradient(90deg,#004aad,#00bfff);
+    color: white;
+    padding: 18px;
+    text-align: center;
+}
+
+.reporting { padding: 24px; max-width: 1100px; margin: 0 auto; }
+.metrics { display:flex; gap:16px; justify-content:center; margin-bottom:20px; }
+.metric { background:white; padding:10px 16px; border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.08); }
+.charts { display:flex; gap:20px; flex-wrap:wrap; margin-top:20px; }
+.chart-card { background:white; padding:12px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.06); width: 48%; min-width: 320px; }
+.student-card { background:#fff; padding:10px; border-radius:8px; margin-bottom:8px; }
