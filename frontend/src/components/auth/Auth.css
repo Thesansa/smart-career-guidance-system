@@ -1,0 +1,132 @@
+/* Full page layout */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px;
+
+    /* Light blue soft gradient background */
+    background: linear-gradient(180deg, #e8f1ff 0%, #f7fbff 100%);
+}
+
+/* Card box */
+.auth-card {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 52px 58px;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 20px;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+    animation: fadeIn 0.35s ease;
+}
+
+/* Fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Titles */
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 6px;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1d1d1d;
+    letter-spacing: 0.4px;
+}
+
+.auth-card h3 {
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: 500;
+    color: #555;
+    font-size: 18px;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Inputs and dropdown */
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 14px 14px;
+    border: 1.7px solid #cfd9e8;
+    border-radius: 10px;
+    font-size: 16px;
+    background: #fafbff;
+    transition: 0.25s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2f8df8;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(47,141,248,0.25);
+    outline: none;
+}
+
+/* Submit Button */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    background: linear-gradient(180deg, #2f8df8 0%, #327fe8 100%);
+    color: white;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+/* Error Alert */
+.error-message {
+    background: #ffe4e4;
+    color: #d10000;
+    padding: 12px 16px;
+    border-radius: 9px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    border-left: 5px solid #ff6b6b;
+}
+
+/* Footer Text */
+.auth-card p {
+    margin-top: 26px;
+    text-align: center;
+    font-size: 15px;
+    color: #444;
+}
+
+.auth-card a {
+    color: #2f8df8;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
+}

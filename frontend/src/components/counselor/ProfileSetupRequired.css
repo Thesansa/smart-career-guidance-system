@@ -1,0 +1,135 @@
+.profile-setup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.profile-setup-card {
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.setup-header h2 {
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.setup-header h3 {
+    color: #e74c3c;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.setup-content {
+    margin-bottom: 30px;
+}
+
+.setup-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.setup-content h4 {
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+
+.setup-content p {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.setup-info {
+    background: #fff9e6;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #f39c12;
+    text-align: left;
+    margin: 20px 0;
+}
+
+.setup-info ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.setup-info li {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.contact-info {
+    background: #e8f4fd;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+    text-align: left;
+    margin: 20px 0;
+}
+
+.contact-details {
+    margin-top: 10px;
+}
+
+.contact-details p {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.current-status {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #e74c3c;
+    margin-top: 20px;
+}
+
+.status-pending {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+.setup-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-logout {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-logout:hover {
+    background: #7f8c8d;
+}
+
+.btn-refresh {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-refresh:hover {
+    background: #2980b9;
+}

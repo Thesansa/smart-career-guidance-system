@@ -22,9 +22,12 @@ public interface StudentCounselorMappingRepository extends JpaRepository<Student
     Optional<StudentCounselorMapping> findByStudentAndCounselor(StudentProfile student, CounselorProfile counselor);
 
     // Find all mappings by counselor ID (used for counselor dashboard reports)
-    List<StudentCounselorMapping> findByCounselorId(Integer counselorId);
+    List<StudentCounselorMapping> findByCounselorId(Long counselorId);
 
     // Count how many students a counselor has (used for admin system overview)
-    long countByCounselorId(Integer counselorId);
+    long countByCounselorId(Long counselorId);
+
+    Optional<StudentCounselorMapping> findByStudentUserId(Integer userId);
+
 
 }

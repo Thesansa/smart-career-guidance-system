@@ -4,6 +4,8 @@ import com.smartcareer.careerguidancebackend.model.CounselorProfile;
 import com.smartcareer.careerguidancebackend.model.User;
 import com.smartcareer.careerguidancebackend.service.CounselorService;
 import com.smartcareer.careerguidancebackend.repository.UserRepository;
+import com.smartcareer.careerguidancebackend.repository.CounselorProfileRepository;
+import com.smartcareer.careerguidancebackend.dto.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,9 @@ public class CounselorController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CounselorProfileRepository counselorProfileRepository;
 
     // 🔑 Get currently logged-in user
     private User getCurrentUser() {
@@ -90,6 +95,27 @@ public class CounselorController {
         }
 
         return ResponseEntity.ok(counselor);
+    }
+
+    // 🟢 Get counselor profile by user ID (For pending approval check)
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getCounselorByUserId(@PathVariable Integer userId) {
+        try {
+            Optional<User> userOpt = userRepository.findById(userId);
+            if (userOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            Optional<CounselorProfile> counselorOpt = counselorProfileRepository.findByUser(userOpt.get());
+            if (counselorOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Counselor profile not found");
+            }
+
+            return ResponseEntity.ok(counselorOpt.get());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ErrorResponse("Error fetching counselor profile"));
+        }
     }
 
     // 🟢 Delete counselor (Admin only)

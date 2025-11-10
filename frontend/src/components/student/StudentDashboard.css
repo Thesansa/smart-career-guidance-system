@@ -1,0 +1,164 @@
+.student-dashboard {
+    padding: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 26px;
+    font-weight: 600;
+}
+
+.dashboard-header .welcome-section {
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+.dashboard-tabs {
+    margin: 25px 0;
+    display: flex;
+    gap: 10px;
+}
+
+.dashboard-tabs button {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    background: #e6e9f5;
+    cursor: pointer;
+}
+
+.dashboard-tabs .tab-active {
+    background: #2f8df8;
+    color: white;
+}
+
+.section-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 3px 10px rgba(0,0,0,0.08);
+    margin-top: 15px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.btn-primary {
+    background: #2f8df8;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+}
+
+.performance-summary-card,
+.skills-summary-card {
+    margin-top: 20px;
+    background: #f8faff;
+    padding: 18px;
+    border-radius: 8px;
+}
+
+.recommendations-list {
+    margin-top: 20px;
+    display: grid;
+    gap: 12px;
+}
+
+.rec-card {
+    background: white;
+    border-radius: 8px;
+    padding: 18px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.08);
+}
+.welcome-card {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.welcome-left h1 {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.welcome-left p {
+    margin: 4px 0;
+    font-size: 16px;
+}
+
+.btn-refresh {
+    background: #2f8df8;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+.btn-refresh:hover {
+    background: #0f6de0;
+}
+.rec-card {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    border-left: 5px solid #dfe7ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+}
+
+.rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.match-chip {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: white;
+    font-weight: 500;
+}
+
+/* Colors */
+.match-chip.high { background: #28a745; }   /* Green */
+.match-chip.medium { background: #ffb100; } /* Yellow */
+.match-chip.low { background: #ff6b6b; }    /* Red */
+
+.counselor-card {
+    margin-top: 20px;
+    background: #ffffff;
+    padding: 18px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.feedback-box {
+    margin-top: 14px;
+    background: #f8fafc;
+    padding: 12px;
+    border-left: 4px solid #3498db;
+    border-radius: 4px;
+}
+
+.feedback-text {
+    font-style: italic;
+    margin-bottom: 5px;
+}
+
+.feedback-date {
+    font-size: 12px;
+    color: #666;
+}
+
+.no-feedback {
+    color: #777;
+}

@@ -1,0 +1,141 @@
+.student-profile-form {
+    padding: 32px;
+    display: flex;
+    justify-content: center;
+}
+
+.profile-form-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Card */
+.profile-form-card {
+    background: #ffffff;
+    padding: 48px 56px;
+    width: 100%;
+    max-width: 720px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.10);
+    animation: fadeIn 0.35s ease;
+}
+
+/* Fade-in */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Titles */
+.profile-form-card h2 {
+    font-size: 26px;
+    margin-bottom: 6px;
+    font-weight: 700;
+    color: #1c2b4a;
+}
+
+.profile-form-card p {
+    margin-bottom: 30px;
+    color: #5f6b7a;
+    font-size: 15px;
+}
+
+/* Layout Grid */
+.form-row {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #34435e;
+    font-size: 14px;
+}
+
+/* Inputs */
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 14px 14px;
+    border-radius: 10px;
+    border: 1.7px solid #d3dcee;
+    background: #fafcff;
+    font-size: 15px;
+    transition: 0.25s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2f8df8;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(47,141,248,0.25);
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* Button */
+.btn-primary {
+    background: linear-gradient(180deg, #2f8df8 0%, #327fe8 100%);
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.07);
+}
+
+/* Error Alert */
+.error-message {
+    background: #ffe4e4;
+    color: #ca0000;
+    padding: 12px 16px;
+    margin-bottom: 22px;
+    border-radius: 10px;
+    border-left: 5px solid #ff6b6b;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .profile-form-card {
+        padding: 28px;
+    }
+    .form-row {
+        flex-direction: column;
+    }
+}
+.counselor-card {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e0e6ff;
+    box-shadow: 0 2px 8px rgba(47, 141, 248, 0.15);
+}
+
+.counselor-card h3 {
+    margin-bottom: 10px;
+    color: #2f8df8;
+}

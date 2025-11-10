@@ -70,7 +70,7 @@ public class StudentProfileController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getProfileByUserId(@PathVariable Integer userId) {
         User currentUser = getCurrentUser();
-        Optional<StudentProfile> profileOpt = studentProfileService.getProfileByUserId(userId.longValue());
+        Optional<StudentProfile> profileOpt = studentProfileService.getProfileByUserId(userId);
 
         if (profileOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Profile not found");
@@ -81,6 +81,21 @@ public class StudentProfileController {
         }
 
         return ResponseEntity.ok(profileOpt.get());
+    }
+
+    // ✅ Get profile of currently logged-in Student
+    @GetMapping("/user/me")
+    public ResponseEntity<?> getMyProfile() {
+        User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        Optional<StudentProfile> profileOpt = studentProfileService.getProfileByUserId(currentUser.getId());
+
+        return profileOpt
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.ok().build()); // return empty if profile not created yet
     }
 
     // ✅ Delete profile (only ADMIN)

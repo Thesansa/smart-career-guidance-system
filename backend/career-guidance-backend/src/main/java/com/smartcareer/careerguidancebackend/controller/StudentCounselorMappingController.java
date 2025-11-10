@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.smartcareer.careerguidancebackend.model.CounselorProfile;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 
@@ -119,6 +122,49 @@ public class StudentCounselorMappingController {
 
         mappingService.removeMapping(mappingId, currentUser.getUsername());
         return ResponseEntity.ok("Mapping removed successfully.");
+    }
+
+    // 🟢 Student views who their assigned counselor is
+    @GetMapping("/my-counselor")
+    public ResponseEntity<?> getMyCounselor() {
+        User currentUser = getCurrentUser();
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        var mappingOpt = mappingService.getMappingByStudentUserId(currentUser.getId());
+        if (mappingOpt.isEmpty()) {
+            return ResponseEntity.ok().body(null);
+        }
+
+        StudentCounselorMapping mapping = mappingOpt.get();
+        CounselorProfile counselor = mapping.getCounselor();
+
+        // ✅ Return counselor + feedback + lastUpdated
+        return ResponseEntity.ok(new Object() {
+            public final String fullName = counselor.getFullName();
+            public final String department = counselor.getDepartment();
+            public final Integer experienceYears = counselor.getExperienceYears();
+            public final String contactNumber = counselor.getContactNumber();
+            public final String feedback = mapping.getFeedback();
+            public final String lastUpdated = mapping.getLastUpdated() != null ? mapping.getLastUpdated().toString() : null;
+        });
+    }
+
+    @GetMapping("/export/pdf")
+    public ResponseEntity<byte[]> exportMappingsPDF() {
+        User currentUser = getCurrentUser();
+        if (!isAdmin(currentUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        byte[] pdfBytes = mappingService.generateMappingPDF();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "student_counselor_mappings.pdf");
+
+        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
     }
 
     // DTO

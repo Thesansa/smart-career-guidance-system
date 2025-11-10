@@ -54,7 +54,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -62,14 +62,17 @@ public class JwtService {
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getRole().getName());
+        claims.put("id", user.getId()); // ✅ Add userId here
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(user.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 2)) // 2 hours
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
+
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);

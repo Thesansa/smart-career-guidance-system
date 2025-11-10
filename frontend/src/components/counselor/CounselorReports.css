@@ -1,0 +1,53 @@
+.counselor-reports-page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.page-title {
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.report-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+}
+
+.career-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.career-name {
+    font-weight: 500;
+}
+
+.career-count {
+    background: #ecf0f1;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.students-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.students-table th, .students-table td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.students-table th {
+    background: #f7f9fc;
+    font-weight: 600;
+}

@@ -101,30 +101,29 @@ public class ReportService {
     @Autowired
     private StudentProfileRepository studentProfileRepository;
 
-    public Map<String, List<Map<String, Object>>> getStudentSkillProgress(Integer studentId) {
-        var studentOpt = studentProfileRepository.findById(studentId);
-        if (studentOpt.isEmpty()) return Collections.emptyMap();
+    public Map<String, List<Map<String, Object>>> getStudentSkillProgress(Long studentId) {
+        StudentProfile student = studentProfileRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        var student = studentOpt.get();
-        var assessments = skillAssessmentRepository.findByStudentOrderByAssessmentDateAsc((StudentProfile) student);
+        var assessments = skillAssessmentRepository.findByStudentOrderByAssessmentDateAsc(student);
 
-        Map<String, List<Map<String, Object>>> skillProgress = new HashMap<>();
-        for (SkillAssessment assessment : assessments) {
-            String skillName = assessment.getSkillName();
-            skillProgress.computeIfAbsent(skillName, k -> new ArrayList<>())
-                    .add(Map.of(
-                            "date", assessment.getAssessmentDate(),
-                            "score", assessment.getScore()
-                    ));
+        Map<String, List<Map<String, Object>>> progress = new HashMap<>();
+
+        for (SkillAssessment a : assessments) {
+            progress.computeIfAbsent(a.getSkillName(), k -> new ArrayList<>())
+                    .add(Map.of("date", a.getAssessmentDate(), "score", a.getScore()));
         }
-        return skillProgress;
+
+        return progress;
     }
+
+
 
     // Get counselor's assigned students and their performance summary
     @Autowired
     private StudentCounselorMappingRepository studentCounselorMappingRepository;
 
-    public List<Map<String, Object>> getAssignedStudentsSummary(Integer counselorId) {
+    public List<Map<String, Object>> getAssignedStudentsSummary(Long counselorId) {
         var mappings = studentCounselorMappingRepository.findByCounselorId(counselorId);
         List<Map<String, Object>> summaryList = new ArrayList<>();
 

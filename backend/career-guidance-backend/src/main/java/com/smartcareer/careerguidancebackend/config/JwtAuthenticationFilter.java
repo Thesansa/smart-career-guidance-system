@@ -68,10 +68,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                     // Debug logging
-                    System.out.println("=== JWT FILTER DEBUG ===");
-                    System.out.println("Username: " + username);
-                    System.out.println("Role from token: " + role);
-                    System.out.println("Authorities: " + authorities);
+                    //System.out.println("=== JWT FILTER DEBUG ===");
+                    //System.out.println("Username: " + username);
+                    //System.out.println("Role from token: " + role);
+                    //System.out.println("Authorities: " + authorities);
                 }
             } catch (Exception e) {
                 // Log error and continue

@@ -1,0 +1,213 @@
+.academic-form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* increase this */
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Card */
+.academic-form {
+    background: #ffffff;
+    width: 100%;
+    max-width: 760px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 18px;
+    padding: 40px;
+    box-shadow: 0 14px 36px rgba(0,0,0,0.22);
+    animation: slideUp 0.28s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(14px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Header */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 26px;
+}
+
+.form-header h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1c2b4a;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #8a97ac;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.close-btn:hover {
+    color: #1c2b4a;
+}
+
+/* Error box */
+.error-message {
+    background: #ffe4e4;
+    color: #d10000;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin-bottom: 22px;
+    border-left: 5px solid #ff6b6b;
+}
+
+/* Records Section */
+.records-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.academic-record-form {
+    background: #f9fbff;
+    border-radius: 14px;
+    padding: 22px;
+    border: 1.6px solid #dfe7f7;
+    transition: 0.25s;
+}
+
+.academic-record-form:hover {
+    border-color: #2f8df8;
+}
+
+/* Record Header */
+.record-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.record-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1c2b4a;
+}
+
+.btn-remove {
+    background: #ff6b6b;
+    border: none;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: 0.25s;
+}
+
+.btn-remove:hover {
+    background: #d84343;
+}
+
+/* Inputs & Selects */
+.form-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 14px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #34435e;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.7px solid #cfd9e8;
+    background: #fafcff;
+    font-size: 15px;
+    transition: 0.25s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #2f8df8;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(47,141,248,0.25);
+    outline: none;
+}
+
+/* Button Bar */
+.form-actions {
+    margin-top: 26px;
+    border-top: 1px solid #e5e9f2;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 14px;
+}
+
+/* Primary button */
+.btn-primary {
+    background: linear-gradient(180deg, #2f8df8 0%, #327fe8 100%);
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-primary:hover {
+    filter: brightness(1.07);
+    transform: translateY(-1px);
+}
+
+/* Secondary button */
+.btn-secondary {
+    background: #eef3ff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    color: #2f8df8;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.btn-secondary:hover {
+    background: #d9e6ff;
+}
+
+/* Mobile */
+@media (max-width: 680px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

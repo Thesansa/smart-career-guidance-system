@@ -2,7 +2,7 @@ package com.smartcareer.careerguidancebackend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonBackReference; // to stop student profile and this entity endless communicate
+import com.fasterxml.jackson.annotation.JsonIgnore; // to stop student profile and this entity endless communicate
 
 @Entity
 @Table(name = "career_recommendation")
@@ -16,7 +16,7 @@ public class CareerRecommendation {
     private String matchLevel;
     private LocalDateTime recommendationDate;
 
-    @JsonBackReference("career-student")
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private StudentProfile student;

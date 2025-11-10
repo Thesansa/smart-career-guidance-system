@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PerformanceSummaryRepository extends JpaRepository<PerformanceSummary, Integer> {
-
-    //  Get a student's performance summary
+public interface PerformanceSummaryRepository extends JpaRepository<PerformanceSummary, Long> { // Change Integer to Long
     PerformanceSummary findByStudent(StudentProfile student);
 }

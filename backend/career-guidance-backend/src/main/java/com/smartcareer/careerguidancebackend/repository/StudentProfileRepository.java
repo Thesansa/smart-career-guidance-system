@@ -6,8 +6,6 @@ import java.util.Optional;
 
 public interface StudentProfileRepository extends JpaRepository<StudentProfile, Long> {
 
-    // Optional helper method: find profile by user
-    Optional<StudentProfile> findByUserId(Long userId);
-
-    Optional<Object> findById(Integer studentId);
+    // Correct type: userId is Integer (because User.id is Integer)
+    Optional<StudentProfile> findByUserId(Integer userId);
 }

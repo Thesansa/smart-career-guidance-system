@@ -5,7 +5,7 @@ import com.smartcareer.careerguidancebackend.model.StudentProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface AcademicPerformanceRepository extends JpaRepository<AcademicPerformance, Integer> {
+public interface AcademicPerformanceRepository extends JpaRepository<AcademicPerformance, Long> { // Change Integer to Long
     List<AcademicPerformance> findByStudent(StudentProfile student);
 }
 

@@ -1,6 +1,8 @@
 package com.smartcareer.careerguidancebackend.controller;
 
-import com.smartcareer.careerguidancebackend.model.*;
+import com.smartcareer.careerguidancebackend.model.CareerRecommendation;
+import com.smartcareer.careerguidancebackend.model.PerformanceSummary;
+import com.smartcareer.careerguidancebackend.model.StudentProfile;
 import com.smartcareer.careerguidancebackend.service.ReportService;
 import com.smartcareer.careerguidancebackend.repository.StudentProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reports")
+@CrossOrigin(origins = "*")
 public class ReportController {
 
     @Autowired
@@ -22,7 +25,7 @@ public class ReportController {
     private StudentProfileRepository studentProfileRepository;
 
 
-    // System Overview - Admin Dashboard
+    // ===================== SYSTEM OVERVIEW - ADMIN =====================
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/overview")
@@ -31,29 +34,29 @@ public class ReportController {
     }
 
 
-    // Student Performance Summary - Student dashboard
+    // ===================== STUDENT PERFORMANCE SUMMARY =====================
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/{studentId}/performance")
-    public Optional<PerformanceSummary> getStudentPerformance(@PathVariable Integer studentId) {
-        StudentProfile student = (StudentProfile) studentProfileRepository.findById(studentId)
+    public Optional<PerformanceSummary> getStudentPerformance(@PathVariable Long studentId) {
+        StudentProfile student = studentProfileRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
         return reportService.getStudentPerformance(student);
     }
 
 
-    // Student Career Recommendations - Student Dashboard
+    // ===================== STUDENT CAREER RECOMMENDATIONS =====================
 
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/student/{studentId}/recommendations")
-    public List<CareerRecommendation> getCareerRecommendations(@PathVariable Integer studentId) {
-        StudentProfile student = studentProfileRepository.findById(Long.valueOf(studentId))
+    public List<CareerRecommendation> getCareerRecommendations(@PathVariable Long studentId) {
+        StudentProfile student = studentProfileRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
         return reportService.getCareerRecommendations(student);
     }
 
 
-    // Counselor/Admin: View Popular Careers
+    // ===================== POPULAR CAREERS (ADMIN + COUNSELOR) =====================
 
     @PreAuthorize("hasAnyRole('COUNSELOR', 'ADMIN')")
     @GetMapping("/popular-careers")
@@ -62,7 +65,7 @@ public class ReportController {
     }
 
 
-    // Counselor Activity Logs - Admin
+    // ===================== COUNSELOR ACTIVITY LOGS - ADMIN =====================
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/counselor-activity")
@@ -71,7 +74,7 @@ public class ReportController {
     }
 
 
-    // Average Grade (All Students) - Admin Analytics
+    // ===================== AVERAGE GRADE (ADMIN) =====================
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/average-grade")
@@ -79,21 +82,22 @@ public class ReportController {
         return reportService.getAverageGradeAllStudents();
     }
 
-// Student Skill Progress Chart - Student/Counselor Dashboard
+
+    // ===================== STUDENT SKILL GROWTH (STUDENT + COUNSELOR) =====================
 
     @PreAuthorize("hasAnyRole('STUDENT', 'COUNSELOR')")
     @GetMapping("/student/{studentId}/skill-progress")
-    public Map<String, List<Map<String, Object>>> getStudentSkillProgress(@PathVariable Integer studentId) {
+    public Map<String, List<Map<String, Object>>> getStudentSkillProgress(@PathVariable Long studentId) {
         return reportService.getStudentSkillProgress(studentId);
     }
 
-// Counselor’s Assigned Students - Counselor/Admin Dashboard
+
+    // ===================== COUNSELOR ASSIGNED STUDENTS (COUNSELOR + ADMIN) =====================
 
     @PreAuthorize("hasAnyRole('COUNSELOR', 'ADMIN')")
     @GetMapping("/counselor/{counselorId}/students")
-    public List<Map<String, Object>> getCounselorStudentsSummary(@PathVariable Integer counselorId) {
+    public List<Map<String, Object>> getCounselorStudentsSummary(@PathVariable Long counselorId) {
         return reportService.getAssignedStudentsSummary(counselorId);
     }
 
 }
-

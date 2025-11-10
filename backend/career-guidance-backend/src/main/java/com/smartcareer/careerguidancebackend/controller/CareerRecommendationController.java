@@ -9,8 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.smartcareer.careerguidancebackend.model.StudentProfile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/recommendations")
@@ -36,6 +38,7 @@ public class CareerRecommendationController {
     public ResponseEntity<?> generateRecommendation() {
         User currentUser = getCurrentUser();
         if (currentUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
         if (!currentUser.getRole().getName().equals("STUDENT"))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only students can generate recommendations");
 
@@ -43,16 +46,26 @@ public class CareerRecommendationController {
         if (studentProfile == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student profile not found");
 
-        List<CareerRecommendation> recommendations =
-                careerRecommendationService.generateRecommendations(studentProfile.getId());
+        try {
+            List<CareerRecommendation> recommendations =
+                    careerRecommendationService.generateRecommendations(studentProfile.getId());
 
-        return ResponseEntity.ok(recommendations);
+            if (recommendations.isEmpty()) {
+                return ResponseEntity.ok("No career recommendations found. Please add more skills to get better matches.");
+            }
+
+            return ResponseEntity.ok(recommendations);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error generating recommendations: " + e.getMessage());
+        }
     }
 
     @GetMapping("/my")
     public ResponseEntity<?> getMyRecommendations() {
         User currentUser = getCurrentUser();
         if (currentUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
         if (!currentUser.getRole().getName().equals("STUDENT"))
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
 
@@ -89,5 +102,30 @@ public class CareerRecommendationController {
 
         List<CareerRecommendation> recs = careerRecommendationService.getAllRecommendations();
         return ResponseEntity.ok(recs);
+    }
+
+    /**
+     * New endpoint: Get detailed breakdown of recommendations (for analytics)
+     */
+    @GetMapping("/breakdown")
+    public ResponseEntity<?> getRecommendationBreakdown() {
+        User currentUser = getCurrentUser();
+        if (currentUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
+        if (!currentUser.getRole().getName().equals("STUDENT"))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+
+        var studentProfile = currentUser.getStudentProfile();
+        if (studentProfile == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student profile not found");
+
+        try {
+            Map<String, Object> breakdown =
+                    careerRecommendationService.getRecommendationBreakdown(studentProfile.getId());
+            return ResponseEntity.ok(breakdown);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error getting recommendation breakdown: " + e.getMessage());
+        }
     }
 }
