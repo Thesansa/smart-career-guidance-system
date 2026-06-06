@@ -1,30 +1,42 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import './Navigation.css';
 
 const Navigation = () => {
     const { user, logout, isAdmin, isStudent, isCounselor } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const isAuthPage = ['/login', '/register'].includes(location.pathname);
 
     const handleLogout = () => {
         logout();
         navigate('/login');
     };
 
+    // Show minimal branding bar on login/register
+    if (isAuthPage) {
+        return (
+            <nav className="navbar">
+                <div className="nav-brand">
+                     Smart Career Guidance System
+                </div>
+            </nav>
+        );
+    }
+
     return (
         <nav className="navbar">
             <div className="nav-brand">
-                <Link to="/dashboard">Career Guidance</Link>
+                <Link to="/dashboard">🎓 Career Guidance</Link>
             </div>
 
             <div className="nav-links">
                 {user && (
                     <>
-                        {/* Always show Dashboard */}
                         <Link to="/dashboard">Dashboard</Link>
 
-                        {/* Student-specific links */}
                         {isStudent && (
                             <>
                                 <Link to="/student/profile">My Profile</Link>
@@ -32,7 +44,6 @@ const Navigation = () => {
                             </>
                         )}
 
-                        {/* Counselor-specific links */}
                         {isCounselor && (
                             <>
                                 <Link to="/counselor/students">My Students</Link>
@@ -40,14 +51,7 @@ const Navigation = () => {
                             </>
                         )}
 
-                        {/* ✅ ADMIN gets NO extra links now */}
-                        {isAdmin && (
-                            <></>
-                        )}
-
-                        <button onClick={handleLogout} className="logout-btn">
-                            Logout
-                        </button>
+                        <button onClick={handleLogout} className="logout-btn">Logout</button>
                     </>
                 )}
             </div>
