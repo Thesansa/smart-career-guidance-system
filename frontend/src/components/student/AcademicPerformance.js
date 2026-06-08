@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { performanceAPI, studentProfileAPI, userAPI } from '../../services/api';
+import { performanceAPI, studentProfileAPI } from '../../services/api';
 import './AcademicPerformance.css';
 
 const AcademicPerformance = () => {
     const { user } = useAuth();
+
     const [academicRecords, setAcademicRecords] = useState([]);
     const [studentProfile, setStudentProfile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -24,21 +25,12 @@ const AcademicPerformance = () => {
     const fetchStudentData = async () => {
         try {
             setLoading(true);
-            // Get student profile
-            const usersResponse = await userAPI.getAllUsers();
-            const currentUser = usersResponse.data.find(u => u.username === user.username);
-
-            if (currentUser) {
-                const profileResponse = await studentProfileAPI.getProfileByUserId(currentUser.id);
-                if (profileResponse.data) {
-                    setStudentProfile(profileResponse.data);
-                    // Fetch academic records
-                    const academicResponse = await performanceAPI.getAcademicPerformance(profileResponse.data.id);
-                    setAcademicRecords(academicResponse.data);
-                }
-            }
+            const profileResponse = await studentProfileAPI.getProfile(user.id);
+            setStudentProfile(profileResponse.data);
+            const performanceResponse = await performanceAPI.getAcademicPerformance(profileResponse.data.id);
+            setAcademicRecords(performanceResponse.data);
         } catch (error) {
-            console.error('Error fetching student data:', error);
+            console.error('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
@@ -47,112 +39,100 @@ const AcademicPerformance = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!studentProfile) return;
-
         try {
-            const academicData = {
-                ...formData,
-                student: { id: studentProfile.id }
-            };
-
-            await performanceAPI.addAcademicPerformance(academicData);
-            await fetchStudentData(); // Refresh data
+            await performanceAPI.addAcademicPerformance({ ...formData, student: { id: studentProfile.id } });
+            await fetchStudentData();
             resetForm();
             alert('Academic record added successfully!');
         } catch (error) {
-            console.error('Error adding academic record:', error);
-            alert('Error adding academic record: ' + (error.response?.data?.message || error.message));
+            alert('Error: ' + (error.response?.data?.message || error.message));
         }
     };
 
     const addSampleData = async () => {
         if (!studentProfile) return;
-
-        if (window.confirm('This will add sample academic data for testing. Continue?')) {
+        if (window.confirm('Add sample academic data for testing?')) {
             try {
                 await performanceAPI.addSampleAcademicData(studentProfile.id);
                 await fetchStudentData();
-                alert('Sample academic data added successfully!');
+                alert('Sample data added!');
             } catch (error) {
-                console.error('Error adding sample data:', error);
-                alert('Error adding sample data: ' + (error.response?.data?.message || error.message));
+                alert('Error: ' + (error.response?.data?.message || error.message));
             }
         }
     };
 
     const resetForm = () => {
-        setFormData({
-            subject: '',
-            grade: '',
-            year: new Date().getFullYear()
-        });
+        setFormData({ subject: '', grade: '', year: new Date().getFullYear() });
         setShowForm(false);
     };
 
     const calculateGPA = () => {
-        if (academicRecords.length === 0) return 0.0;
-
-        const gradePoints = {
-            'A+': 4.0, 'A': 3.8, 'B+': 3.5,
-            'B': 3.0, 'C': 2.5, 'D': 2.0, 'F': 0.0
-        };
-
-        const total = academicRecords.reduce((sum, record) => {
-            return sum + (gradePoints[record.grade] || 0);
-        }, 0);
-
+        if (academicRecords.length === 0) return '0.00';
+        const gradePoints = { 'A+': 4.0, 'A': 3.8, 'B+': 3.5, 'B': 3.0, 'C': 2.5, 'D': 2.0, 'F': 0.0 };
+        const total = academicRecords.reduce((sum, r) => sum + (gradePoints[r.grade] || 0), 0);
         return (total / academicRecords.length).toFixed(2);
     };
 
-    if (loading) return <div className="loading">Loading academic records...</div>;
+    const gradeColors = {
+        'A+': '#16a34a', 'A': '#22c55e', 'B+': '#2563b0',
+        'B': '#3b82f6', 'C': '#f59e0b', 'D': '#f97316', 'F': '#dc2626'
+    };
+
+    const gradePoints = {
+        'A+': '4.0', 'A': '3.8', 'B+': '3.5',
+        'B': '3.0', 'C': '2.5', 'D': '2.0', 'F': '0.0'
+    };
+
+    if (loading) return <div className="ap-loading">Loading academic records...</div>;
 
     return (
-        <div className="academic-performance">
-            <div className="academic-header">
-                <h2>Academic Performance</h2>
-                <div className="header-actions">
-                    <button onClick={() => setShowForm(true)} className="btn-primary">
-                        + Add Academic Record
-                    </button>
-                    <button onClick={addSampleData} className="btn-secondary">
-                        Add Sample Data
-                    </button>
+        <div className="ap-page">
+
+            <div className="ap-header">
+                <div>
+                    <h2>📚 Academic Performance</h2>
+                    <p>Track your academic records and GPA</p>
+                </div>
+                <div className="ap-header-actions">
+                    <button onClick={() => setShowForm(true)} className="ap-btn-primary">+ Add Record</button>
+                    <button onClick={addSampleData} className="ap-btn-secondary">Add Sample Data</button>
                 </div>
             </div>
 
-            {/* Academic Summary */}
-            <div className="academic-summary">
-                <div className="summary-card">
-                    <h3>Academic Summary</h3>
-                    <div className="summary-stats">
-                        <div className="stat">
-                            <span className="stat-value">{academicRecords.length}</span>
-                            <span className="stat-label">Courses</span>
-                        </div>
-                        <div className="stat">
-                            <span className="stat-value">{calculateGPA()}</span>
-                            <span className="stat-label">GPA</span>
-                        </div>
-                        <div className="stat">
-                            <span className="stat-value">
-                                {academicRecords.filter(r => ['A+', 'A'].includes(r.grade)).length}
-                            </span>
-                            <span className="stat-label">A Grades</span>
-                        </div>
+            <div className="ap-summary-row">
+                <div className="ap-stat-card">
+                    <div className="ap-stat-value">{academicRecords.length}</div>
+                    <div className="ap-stat-label">Total Courses</div>
+                </div>
+                <div className="ap-stat-card">
+                    <div className="ap-stat-value">{calculateGPA()}</div>
+                    <div className="ap-stat-label">GPA</div>
+                </div>
+                <div className="ap-stat-card">
+                    <div className="ap-stat-value">
+                        {academicRecords.filter(r => ['A+', 'A'].includes(r.grade)).length}
                     </div>
+                    <div className="ap-stat-label">A Grades</div>
+                </div>
+                <div className="ap-stat-card">
+                    <div className="ap-stat-value">
+                        {[...new Set(academicRecords.map(r => r.year))].length}
+                    </div>
+                    <div className="ap-stat-label">Years</div>
                 </div>
             </div>
 
-            {/* Add Academic Record Form */}
             {showForm && (
-                <div className="academic-form-overlay">
-                    <div className="academic-form">
-                        <div className="form-header">
+                <div className="ap-overlay">
+                    <div className="ap-modal">
+                        <div className="ap-modal-header">
                             <h3>Add Academic Record</h3>
-                            <button onClick={resetForm} className="close-btn">&times;</button>
+                            <button onClick={resetForm} className="ap-close-btn">&times;</button>
                         </div>
                         <form onSubmit={handleSubmit}>
-                            <div className="form-group">
-                                <label>Subject:</label>
+                            <div className="ap-form-group">
+                                <label>Subject</label>
                                 <input
                                     type="text"
                                     value={formData.subject}
@@ -161,99 +141,79 @@ const AcademicPerformance = () => {
                                     required
                                 />
                             </div>
-
-                            <div className="form-row">
-                                <div className="form-group">
-                                    <label>Grade:</label>
+                            <div className="ap-form-row">
+                                <div className="ap-form-group">
+                                    <label>Grade</label>
                                     <select
                                         value={formData.grade}
                                         onChange={(e) => setFormData({...formData, grade: e.target.value})}
                                         required
                                     >
                                         <option value="">Select Grade</option>
-                                        {grades.map(grade => (
-                                            <option key={grade} value={grade}>{grade}</option>
-                                        ))}
+                                        {grades.map(g => <option key={g} value={g}>{g}</option>)}
                                     </select>
                                 </div>
-
-                                <div className="form-group">
-                                    <label>Year:</label>
+                                <div className="ap-form-group">
+                                    <label>Year</label>
                                     <input
                                         type="number"
                                         value={formData.year}
                                         onChange={(e) => setFormData({...formData, year: parseInt(e.target.value)})}
-                                        min="2000"
-                                        max="2030"
+                                        min="2000" max="2030"
                                         required
                                     />
                                 </div>
                             </div>
-
-                            <div className="form-actions">
-                                <button type="submit" className="btn-primary">
-                                    Add Record
-                                </button>
-                                <button type="button" onClick={resetForm} className="btn-secondary">
-                                    Cancel
-                                </button>
+                            <div className="ap-modal-actions">
+                                <button type="submit" className="ap-btn-primary">Add Record</button>
+                                <button type="button" onClick={resetForm} className="ap-btn-secondary">Cancel</button>
                             </div>
                         </form>
                     </div>
                 </div>
             )}
 
-            {/* Academic Records Table */}
-            <div className="academic-records">
+            <div className="ap-table-card">
                 <h3>Course Records ({academicRecords.length})</h3>
-
                 {academicRecords.length === 0 ? (
-                    <div className="no-records">
-                        <div className="no-records-icon">📚</div>
+                    <div className="ap-empty">
+                        <div className="ap-empty-icon">📚</div>
                         <h4>No Academic Records Found</h4>
-                        <p>Add your academic records to see your performance summary and get better career recommendations.</p>
-                        <p>You can add records manually or use the "Add Sample Data" button for testing.</p>
-                        <div className="action-buttons">
-                            <button onClick={() => setShowForm(true)} className="btn-primary">
-                                Add Your First Record
-                            </button>
-                            <button onClick={addSampleData} className="btn-secondary">
-                                Add Sample Data for Testing
-                            </button>
+                        <p>Add your academic records to see your performance summary.</p>
+                        <div className="ap-empty-actions">
+                            <button onClick={() => setShowForm(true)} className="ap-btn-primary">Add Your First Record</button>
+                            <button onClick={addSampleData} className="ap-btn-secondary">Add Sample Data</button>
                         </div>
                     </div>
                 ) : (
-                    <div className="records-table">
-                        <table>
-                            <thead>
+                    <table className="ap-table">
+                        <thead>
                             <tr>
                                 <th>Subject</th>
                                 <th>Grade</th>
                                 <th>Year</th>
                                 <th>Grade Points</th>
                             </tr>
-                            </thead>
-                            <tbody>
+                        </thead>
+                        <tbody>
                             {academicRecords.map((record, index) => (
                                 <tr key={index}>
                                     <td>{record.subject}</td>
                                     <td>
-                                            <span className={`grade-badge grade-${record.grade}`}>
-                                                {record.grade}
-                                            </span>
+                                        <span className="ap-grade-badge" style={{
+                                            background: gradeColors[record.grade] + '18',
+                                            color: gradeColors[record.grade],
+                                            border: `1.5px solid ${gradeColors[record.grade]}40`
+                                        }}>
+                                            {record.grade}
+                                        </span>
                                     </td>
                                     <td>{record.year}</td>
-                                    <td>
-                                        {{
-                                            'A+': '4.0', 'A': '3.8', 'B+': '3.5',
-                                            'B': '3.0', 'C': '2.5', 'D': '2.0', 'F': '0.0'
-                                        }[record.grade] || '0.0'}
-                                    </td>
+                                    <td>{gradePoints[record.grade] || '0.0'}</td>
                                 </tr>
                             ))}
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
                 )}
             </div>
         </div>

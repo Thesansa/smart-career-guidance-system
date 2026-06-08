@@ -1,0 +1,317 @@
+.ap-page {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #bfdbfe 100%);
+    padding: 40px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.ap-loading {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #2563b0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.ap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.ap-header h2 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1a3c6e;
+    margin: 0 0 4px 0;
+}
+
+.ap-header p {
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.ap-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.ap-summary-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.ap-stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    border-top: 3px solid #2563b0;
+}
+
+.ap-stat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a3c6e;
+    margin-bottom: 6px;
+}
+
+.ap-stat-label {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.ap-table-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px 32px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+}
+
+.ap-table-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a3c6e;
+    margin: 0 0 20px 0;
+}
+
+.ap-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.ap-table thead tr {
+    background: #f8faff;
+}
+
+.ap-table th {
+    padding: 13px 18px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ap-table td {
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #1f2937;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.ap-table tbody tr:hover {
+    background: #f8faff;
+}
+
+.ap-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ap-grade-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ap-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+}
+
+.ap-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.ap-empty h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a3c6e;
+    margin-bottom: 8px;
+}
+
+.ap-empty p {
+    font-size: 14px;
+    margin-bottom: 24px;
+}
+
+.ap-empty-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.ap-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 28, 46, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+    padding: 20px;
+}
+
+.ap-modal {
+    background: #fff;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 36px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-top: 3px solid #2563b0;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.ap-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.ap-modal-header h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a3c6e;
+}
+
+.ap-close-btn {
+    background: #f1f5f9;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.ap-close-btn:hover {
+    background: #e2e8f0;
+    color: #1a3c6e;
+}
+
+.ap-form-group {
+    margin-bottom: 18px;
+}
+
+.ap-form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ap-form-group input,
+.ap-form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.8px solid #dde3f0;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1f2937;
+    background: #fafbff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+    height: 46px;
+}
+
+.ap-form-group input:focus,
+.ap-form-group select:focus {
+    border-color: #2563b0;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,176,0.12);
+}
+
+.ap-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.ap-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.ap-btn-primary {
+    background: linear-gradient(135deg, #1a3c6e, #2563b0);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 22px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.2s, transform 0.15s;
+    flex: 1;
+}
+
+.ap-btn-primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.ap-btn-secondary {
+    background: #eff6ff;
+    border: 1.8px solid #2563b0;
+    border-radius: 10px;
+    color: #2563b0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0 22px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', sans-serif;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.ap-btn-secondary:hover {
+    background: #dbeafe;
+}
+
+@media (max-width: 768px) {
+    .ap-page { padding: 20px 16px; }
+    .ap-summary-row { grid-template-columns: repeat(2, 1fr); }
+    .ap-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .ap-form-row { grid-template-columns: 1fr; }
+}#

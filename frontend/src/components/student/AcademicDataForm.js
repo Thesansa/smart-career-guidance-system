@@ -35,7 +35,6 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
         setLoading(true);
         setError('');
 
-        // Validate records
         const invalidRecords = academicRecords.filter(record =>
             !record.subject.trim() || !record.grade.trim() || !record.year
         );
@@ -47,22 +46,17 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
         }
 
         try {
-            // Add records one by one using the existing endpoint
             const promises = academicRecords.map(record =>
                 performanceAPI.addAcademicPerformance({
                     ...record,
                     student: { id: studentId }
                 })
             );
-
             await Promise.all(promises);
             alert('Academic records added successfully!');
-
-            if (onDataAdded) {
-                onDataAdded();
-            }
+            if (onDataAdded) onDataAdded();
         } catch (error) {
-            console.error('❌ Error adding academic data:', error);
+            console.error('Error adding academic data:', error);
             setError('Error adding academic data: ' + (error.response?.data?.message || error.message));
         } finally {
             setLoading(false);
@@ -91,16 +85,16 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
                                         <button
                                             type="button"
                                             onClick={() => removeRecord(index)}
-                                            className="btn-remove"
+                                            className="ac-btn-remove"
                                         >
-                                            🗑️ Remove
+                                            Remove
                                         </button>
                                     )}
                                 </div>
 
                                 <div className="form-row">
                                     <div className="form-group">
-                                        <label>Subject:</label>
+                                        <label>Subject</label>
                                         <input
                                             type="text"
                                             value={record.subject}
@@ -111,7 +105,7 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Grade:</label>
+                                        <label>Grade</label>
                                         <select
                                             value={record.grade}
                                             onChange={(e) => updateRecord(index, 'grade', e.target.value)}
@@ -125,7 +119,7 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
                                     </div>
 
                                     <div className="form-group">
-                                        <label>Year:</label>
+                                        <label>Year</label>
                                         <input
                                             type="number"
                                             value={record.year}
@@ -141,28 +135,15 @@ const AcademicDataForm = ({ studentId, onDataAdded, onCancel }) => {
                     </div>
 
                     <div className="form-actions">
-                        <button
-                            type="button"
-                            onClick={addRecord}
-                            className="btn-secondary"
-                        >
-                            ➕ Add Another Record
+                        <button type="button" onClick={addRecord} className="ac-btn-add">
+                            + Add Another Record
                         </button>
-
-                        <div className="action-buttons">
-                            <button
-                                type="submit"
-                                className="btn-primary"
-                                disabled={loading}
-                            >
-                                {loading ? '💾 Saving...' : '💾 Save Academic Records'}
+                        <div className="btn-right">
+                            <button type="submit" className="ac-btn-save" disabled={loading}>
+                                {loading ? 'Saving...' : 'Save Records'}
                             </button>
-                            <button
-                                type="button"
-                                onClick={onCancel}
-                                className="btn-secondary"
-                            >
-                                ❌ Cancel
+                            <button type="button" onClick={onCancel} className="ac-btn-cancel">
+                                Cancel
                             </button>
                         </div>
                     </div>

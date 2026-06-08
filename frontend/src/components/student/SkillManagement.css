@@ -1,232 +1,373 @@
-/* Page Container */
-.skills-layout {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px;
+/* =============================================
+   Skill Management
+   ============================================= */
+
+.skill-management {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #bfdbfe 100%);
+    padding: 40px;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Header */
+/* ── HEADER ── */
 .skills-header {
-    margin-bottom: 26px;
     display: flex;
     justify-content: space-between;
-    align-items: end;
-    flex-wrap: wrap;
-    gap: 16px;
+    align-items: center;
+    margin-bottom: 32px;
 }
 
 .skills-header h2 {
     font-size: 26px;
     font-weight: 700;
-    color: #1c2b4a;
-}
-
-.header-info p {
+    color: #1a3c6e;
     margin: 0;
-    color: #67748a;
+}
+
+/* ── ERROR ── */
+.sk-error {
+    background: #fff0f0;
+    color: #c0392b;
+    padding: 12px 16px;
+    border-radius: 10px;
     font-size: 14px;
+    margin-bottom: 20px;
+    border-left: 4px solid #e74c3c;
 }
 
-/* Add Skill Button */
-.btn-primary {
-    background: linear-gradient(180deg, #2f8df8 0%, #327fe8 100%);
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s;
-}
-
-.btn-primary:hover {
-    filter: brightness(1.08);
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: #eef3ff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    color: #2f8df8;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s;
-}
-
-.btn-secondary:hover {
-    background: #dce8ff;
-}
-
-/* Skill Grid */
+/* ── SKILLS GRID ── */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
 }
 
-/* Skill Card */
+/* ── SKILL CARD ── */
 .skill-card {
-    background: #ffffff;
-    padding: 22px;
-    border-radius: 14px;
-    box-shadow: 0px 4px 14px rgba(0,0,0,0.08);
-    transition: transform 0.25s;
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    border-top: 3px solid #2563b0;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .skill-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.11);
 }
 
-.skill-header {
+.skill-card-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    align-items: center;
+    margin-bottom: 14px;
 }
 
-.skill-header h4 {
-    font-size: 18px;
-    font-weight: 600;
+.skill-card-header h4 {
     margin: 0;
-    color: #1c2b4a;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a3c6e;
 }
 
-/* Skill Action Buttons */
-.skill-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.btn-edit {
-    color: #ffb74d;
-}
-.btn-edit:hover {
-    color: #ff9800;
-}
-
-.btn-delete {
-    color: #ff6b6b;
-}
-.btn-delete:hover {
-    color: #d84343;
-}
-
-/* Skill Progress Bar */
-.skill-proficiency {
-    margin-top: 10px;
-}
-
-.percentage-display {
+.skill-actions {
     display: flex;
-    justify-content: space-between;
+    gap: 8px;
+}
+
+.sk-btn-edit {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    color: #2563b0;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 12px;
     font-weight: 600;
-    color: #1c2b4a;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-.proficiency-bar-container {
-    background: #e8effa;
+.sk-btn-edit:hover {
+    background: #dbeafe;
+    border-color: #2563b0;
+}
+
+.sk-btn-delete {
+    background: #fff0f0;
+    border: 1.5px solid #fca5a5;
+    color: #dc2626;
+    padding: 5px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sk-btn-delete:hover {
+    background: #dc2626;
+    color: #fff;
+    border-color: #dc2626;
+}
+
+.skill-score-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skill-score {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a3c6e;
+}
+
+.skill-label {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.skill-bar-track {
+    width: 100%;
     height: 8px;
-    border-radius: 6px;
-    margin-top: 6px;
+    background: #e9eef6;
+    border-radius: 99px;
     overflow: hidden;
+    margin-bottom: 10px;
 }
 
-.proficiency-bar {
+.skill-bar-fill {
     height: 100%;
-    border-radius: 6px;
+    border-radius: 99px;
     transition: width 0.4s ease;
 }
 
-/* Skill Date */
 .skill-date {
-    margin-top: 8px;
-    font-size: 13px;
-    color: #7d899e;
+    font-size: 12px;
+    color: #94a3b8;
 }
 
-/* Modal Overlay */
+/* ── NO SKILLS ── */
+.no-skills {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: #fff;
+    border-radius: 16px;
+    color: #6b7280;
+    font-size: 16px;
+}
+
+.no-skills p {
+    margin-bottom: 16px;
+}
+
+/* ── BUTTONS ── */
+.sk-btn-add {
+    background: linear-gradient(135deg, #1a3c6e, #2563b0);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 12px 22px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.sk-btn-add:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+/* ── MODAL ── */
 .skill-form-overlay {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 28, 46, 0.55);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1100;
-    animation: fadeIn 0.25s ease;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+    padding: 20px;
 }
 
-/* Modal Card */
 .skill-form {
-    background: #ffffff;
-    padding: 32px;
-    border-radius: 16px;
+    background: #fff;
     width: 100%;
     max-width: 480px;
-    box-shadow: 0px 10px 30px rgba(0,0,0,0.22);
-    animation: slideUp 0.25s ease;
+    border-radius: 20px;
+    padding: 36px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    border-top: 3px solid #2563b0;
+    animation: slideUp 0.3s ease;
 }
 
 @keyframes slideUp {
-    from { transform: translateY(12px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
 }
 
-/* Form Header */
 .form-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 16px;
+    align-items: center;
+    margin-bottom: 24px;
 }
 
 .form-header h3 {
     margin: 0;
     font-size: 20px;
-    color: #1c2b4a;
+    font-weight: 700;
+    color: #1a3c6e;
 }
 
 .close-btn {
-    background: none;
+    background: #f1f5f9;
     border: none;
-    font-size: 26px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: #64748b;
     cursor: pointer;
-    color: #7d899e;
-    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
 }
 
 .close-btn:hover {
-    color: #1c2b4a;
+    background: #e2e8f0;
+    color: #1a3c6e;
 }
 
-/* Slider */
-.percentage-slider {
-    width: 100%;
-    margin: 8px 0;
+.form-group {
+    margin-bottom: 20px;
 }
 
-.percentage-value {
-    font-weight: 700;
-    color: #1c2b4a;
-}
-
-.proficiency-label {
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
     font-weight: 600;
-    margin-left: 4px;
-}
-
-/* Empty State */
-.no-skills {
-    text-align: center;
-    padding: 50px 20px;
-    background: #f8faff;
-    border-radius: 14px;
-    border: 1px dashed #cbd9ff;
-}
-
-.no-skills-icon {
-    font-size: 42px;
+    color: #374151;
     margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.proficiency-tag {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1.8px solid #dde3f0;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1f2937;
+    background: #fafbff;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+    height: 46px;
+}
+
+.form-group input[type="text"]::placeholder {
+    color: #b0b8c9;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #2563b0;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(37,99,176,0.12);
+}
+
+.skill-slider {
+    width: 100%;
+    accent-color: #2563b0;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* ── MODAL BUTTONS ── */
+.sk-form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.sk-btn-save {
+    flex: 1;
+    background: linear-gradient(135deg, #1a3c6e, #2563b0);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 46px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.sk-btn-save:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.sk-btn-cancel {
+    flex: 1;
+    background: #eff6ff;
+    border: 1.8px solid #2563b0;
+    border-radius: 10px;
+    color: #2563b0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    height: 46px;
+    font-family: 'Segoe UI', sans-serif;
+    transition: all 0.2s;
+}
+
+.sk-btn-cancel:hover {
+    background: #dbeafe;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+    .skill-management { padding: 20px 16px; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .skills-header { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
