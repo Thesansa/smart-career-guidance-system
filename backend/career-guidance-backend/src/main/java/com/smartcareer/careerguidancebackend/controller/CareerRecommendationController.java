@@ -1,9 +1,12 @@
 package com.smartcareer.careerguidancebackend.controller;
 
 import com.smartcareer.careerguidancebackend.model.CareerRecommendation;
+import com.smartcareer.careerguidancebackend.model.CounselorProfile;
 import com.smartcareer.careerguidancebackend.model.User;
 import com.smartcareer.careerguidancebackend.service.CareerRecommendationService;
+import com.smartcareer.careerguidancebackend.service.StudentCounselorMappingService;
 import com.smartcareer.careerguidancebackend.repository.UserRepository;
+import com.smartcareer.careerguidancebackend.repository.CounselorProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,11 @@ public class CareerRecommendationController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private StudentCounselorMappingService mappingService;
+
+    @Autowired
+    private CounselorProfileRepository counselorProfileRepository;
 
     private User getCurrentUser() {
         try {
@@ -79,20 +87,58 @@ public class CareerRecommendationController {
         return ResponseEntity.ok(recs);
     }
 
+
     @GetMapping("/student/{studentId}")
-    public ResponseEntity<?> getRecommendationsByStudentId(@PathVariable Long studentId) {
+    public ResponseEntity<?> getRecommendationsByStudentId(
+            @PathVariable Long studentId) {
+
         User currentUser = getCurrentUser();
-        if (currentUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+
+        if (currentUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Unauthorized");
+        }
 
         String role = currentUser.getRole().getName();
-        if (!(role.equals("ADMIN") || role.equals("COUNSELOR")))
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied");
+
+        if ("ADMIN".equalsIgnoreCase(role)) {
+            // Admins can access any student's recommendations.
+            List<CareerRecommendation> recs =
+                    careerRecommendationService
+                            .getRecommendationsByStudent(studentId);
+
+            return ResponseEntity.ok(recs);
+        }
+
+        if (!"COUNSELOR".equalsIgnoreCase(role)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Access denied");
+        }
+
+        CounselorProfile counselor = counselorProfileRepository
+                .findByUser(currentUser)
+                .orElse(null);
+
+        if (counselor == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("Counselor profile not found");
+        }
+
+        boolean assigned = mappingService.isAssignedToCounselor(
+                studentId, counselor.getId());
+
+        if (!assigned) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body("You are not assigned to this student");
+        }
 
         List<CareerRecommendation> recs =
-                careerRecommendationService.getRecommendationsByStudent(studentId);
+                careerRecommendationService
+                        .getRecommendationsByStudent(studentId);
 
         return ResponseEntity.ok(recs);
     }
+
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllRecommendations() {

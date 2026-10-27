@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local backend configuration
+backend/career-guidance-backend/src/main/resources/application.properties

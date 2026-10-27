@@ -38,6 +38,12 @@ public class StudentCounselorMappingService {
     @Autowired
     private SystemLogRepository systemLogRepository;
 
+    @Autowired
+    private StudentProfileRepository StudentProfileRepository;
+
+    @Autowired
+    private CounselorProfileRepository CounselorProfileRepository;
+
     public StudentCounselorMapping assignStudentToCounselor(Long studentId, Long counselorProfileId, String actorUsername) {
         StudentProfile student = studentProfileRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
@@ -130,5 +136,24 @@ public class StudentCounselorMappingService {
         document.close();
 
         return baos.toByteArray();
+    }
+
+    public boolean isAssignedToCounselor(
+            Long studentId,
+            Long counselorProfileId) {
+
+        StudentProfile student = studentProfileRepository
+                .findById(studentId)
+                .orElseThrow(() ->
+                        new RuntimeException("Student not found"));
+
+        CounselorProfile counselor = counselorProfileRepository
+                .findById(counselorProfileId)
+                .orElseThrow(() ->
+                        new RuntimeException("Counselor not found"));
+
+        return mappingRepository
+                .findByStudentAndCounselor(student, counselor)
+                .isPresent();
     }
 }
