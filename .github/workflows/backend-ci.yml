@@ -3,14 +3,14 @@ name: Backend CI
 on:
   push:
     branches:
-      - fix/critical-api-security
+      - feature/critical-api-testing
     paths:
       - 'backend/career-guidance-backend/**'
       - '.github/workflows/backend-ci.yml'
 
   pull_request:
     branches:
-      - fix/critical-api-security
+      - feature/critical-api-testing
     paths:
       - 'backend/career-guidance-backend/**'
       - '.github/workflows/backend-ci.yml'
@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-    #Provides an isolated database for testing.
+      # Provides an isolated database for testing.
       mysql:
         image: mysql:8.0
         env:
