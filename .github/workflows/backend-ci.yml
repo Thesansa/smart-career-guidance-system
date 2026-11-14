@@ -65,5 +65,6 @@ jobs:
             SPRING_DATASOURCE_USERNAME: root
             SPRING_DATASOURCE_PASSWORD: root
             SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-            JWT_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+            APP_JWT_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+            
             
