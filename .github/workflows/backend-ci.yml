@@ -1,0 +1,66 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - fix/critical-api-security
+    paths:
+      - 'backend/career-guidance-backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+  pull_request:
+    branches:
+      - fix/critical-api-security
+    paths:
+      - 'backend/career-guidance-backend/**'
+      - '.github/workflows/backend-ci.yml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-test:
+    name: Backend Build and Tests
+    runs-on: ubuntu-latest
+
+    services:
+    #Provides an isolated database for testing.
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: career_guidance_db
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    defaults:
+      run:
+        working-directory: backend/career-guidance-backend
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Make Maven Wrapper Executable
+        run: chmod +x ./mvnw
+
+      - name: Run Backend Tests
+        env:
+          DB_URL: jdbc:mysql://127.0.0.1:3306/career_guidance_db?useSSL=false&allowPublicKeyRetrieval=true
+          DB_USERNAME: root
+          DB_PASSWORD: root
+        run: ./mvnw -B clean test
