@@ -1,26 +1,22 @@
+
 package com.smartcareer.careerguidancebackend.controller;
 
-import com.smartcareer.careerguidancebackend.dto.request.UserRegistrationRequest;
 import com.smartcareer.careerguidancebackend.dto.request.UserLoginRequest;
-
-import com.smartcareer.careerguidancebackend.dto.response.UserResponse;
+import com.smartcareer.careerguidancebackend.dto.request.UserRegistrationRequest;
 import com.smartcareer.careerguidancebackend.dto.response.JwtResponse;
-
+import com.smartcareer.careerguidancebackend.dto.response.UserResponse;
 import com.smartcareer.careerguidancebackend.model.User;
 import com.smartcareer.careerguidancebackend.service.UserService;
-
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.http.HttpStatus;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,7 +26,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
     // =========================================================
     // USER REGISTRATION
     // =========================================================
@@ -39,7 +34,6 @@ public class UserController {
     public ResponseEntity<UserResponse> addUser(
             @Valid @RequestBody UserRegistrationRequest userRequest) {
 
-        // Map only the permitted registration fields.
         User user = new User();
 
         user.setUsername(userRequest.getUsername());
@@ -49,17 +43,10 @@ public class UserController {
         // The service independently assigns the STUDENT role.
         User savedUser = userService.saveUser(user);
 
-        // Convert the entity into a safe response DTO.
-        UserResponse response = new UserResponse(
-                savedUser.getId(),
-                savedUser.getUsername(),
-                savedUser.getEmail(),
-                savedUser.getRole().getName()
-        );
+        UserResponse response = convertToUserResponse(savedUser);
 
         return ResponseEntity.ok(response);
     }
-
 
     // =========================================================
     // USER LOGIN
@@ -77,29 +64,66 @@ public class UserController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-
     // =========================================================
-    // EXISTING USER OPERATIONS
+    // GET ALL USERS - ADMIN ONLY
     // =========================================================
 
     @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+
+        List<UserResponse> users = userService.getAllUsers()
+                .stream()
+                .map(this::convertToUserResponse)
+                .toList();
+
+        return ResponseEntity.ok(users);
     }
 
+    // =========================================================
+    // GET USER BY ID - ADMIN OR ACCOUNT OWNER
+    // =========================================================
+
     @GetMapping("/{id}")
-    public Optional<User> getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id);
+    public ResponseEntity<UserResponse> getUserById(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        User user = userService.getUserByIdForRequester(
+                id,
+                userDetails.getUsername()
+        );
+
+        return ResponseEntity.ok(convertToUserResponse(user));
     }
+
+    // =========================================================
+    // DELETE USER
+    // =========================================================
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(
             @PathVariable Integer id,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        userService.deleteUser(id, userDetails.getUsername());
+        userService.deleteUser(
+                id,
+                userDetails.getUsername()
+        );
 
         return ResponseEntity.noContent().build();
     }
 
+    // =========================================================
+    // ENTITY TO RESPONSE DTO MAPPING
+    // =========================================================
+
+    private UserResponse convertToUserResponse(User user) {
+
+        return new UserResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRole().getName()
+        );
+    }
 }

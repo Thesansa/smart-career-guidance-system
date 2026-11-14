@@ -219,4 +219,44 @@ public class UserService {
                         new RuntimeException("User not found: " + username));
     }
 
+
+    public User getUserByIdForRequester(
+            Integer targetUserId,
+            String requesterUsername) {
+
+        // 1. Find the authenticated requester.
+        User requester = userRepository.findByUsername(requesterUsername)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Requesting user not found."
+                        )
+                );
+
+        // 2. Determine the requester's current role from the database.
+        String requesterRole = requester.getRole().getName();
+
+        // 3. ADMIN can view any user's details.
+        boolean isAdmin =
+                "ADMIN".equalsIgnoreCase(requesterRole);
+
+        // 4. Non-admin users can only view their own account.
+        boolean requestingOwnAccount =
+                requester.getId().equals(targetUserId);
+
+        if (!isAdmin && !requestingOwnAccount) {
+            throw new ForbiddenOperationException(
+                    "You are not authorized to view this user's details."
+            );
+        }
+
+        // 5. Retrieve the requested account.
+        return userRepository.findById(targetUserId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found."
+                        )
+                );
+    }
+
+
 }

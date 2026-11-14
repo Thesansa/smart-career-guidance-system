@@ -1,3 +1,4 @@
+
 # ==========================================
 # Smart Career Guidance - Backend Docker Run
 # ==========================================
@@ -7,11 +8,25 @@ $ImageName = "smart-career-backend:local"
 
 # Database configuration
 $DatabaseUrl = "jdbc:mysql://host.docker.internal:3306/career_guidance_db"
-$DatabaseUsername =
+$DatabaseUsername = "root"
 
-# Prompt for password without displaying it
 $SecurePassword = Read-Host "Enter MySQL password" -AsSecureString
-$DatabasePassword = [System.Net.NetworkCredential]::new("", $SecurePassword).Password
+$DatabasePassword = [System.Net.NetworkCredential]::new(
+    "",
+    $SecurePassword
+).Password
+
+# JWT configuration
+$SecureJwtSecret = Read-Host "Enter Base64 JWT secret" -AsSecureString
+$JwtSecret = [System.Net.NetworkCredential]::new(
+    "",
+    $SecureJwtSecret
+).Password
+
+if ([string]::IsNullOrWhiteSpace($JwtSecret)) {
+    Write-Host "JWT secret is required." -ForegroundColor Red
+    exit 1
+}
 
 # Remove existing container if present
 $ExistingContainer = docker ps -aq -f "name=^${ContainerName}$"
@@ -30,9 +45,9 @@ docker run -d `
     -e DB_URL="$DatabaseUrl" `
     -e DB_USERNAME="$DatabaseUsername" `
     -e DB_PASSWORD="$DatabasePassword" `
+    -e JWT_SECRET="$JwtSecret" `
     $ImageName
 
-# Check result
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Backend container started successfully!" -ForegroundColor Green
     docker ps --filter "name=$ContainerName"
@@ -40,6 +55,8 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "Failed to start backend container." -ForegroundColor Red
 }
 
-# Clear password variable
+# Clear sensitive variables
 $DatabasePassword = $null
 $SecurePassword = $null
+$JwtSecret = $null
+$SecureJwtSecret = $null
