@@ -1,0 +1,8 @@
+package com.smartcareer.careerguidancebackend.exceptions;
+
+public class ResourceNotFoundException extends RuntimeException {
+
+    public ResourceNotFoundException(String message) {
+        super(message);
+    }
+}

@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 
@@ -42,7 +43,31 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/login", "/api/users/add", "/api/roles/**").permitAll()
+
+                        // Public authentication endpoints
+                        .requestMatchers(
+                                "/api/users/login",
+                                "/api/users/add"
+                        ).permitAll()
+
+                        // Public role read operations
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/roles/**"
+                        ).permitAll()
+
+                        // Role creation and deletion require ADMIN
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/roles/**"
+                        ).hasRole("ADMIN")
+
+                        .requestMatchers(
+                                HttpMethod.DELETE,
+                                "/api/roles/**"
+                        ).hasRole("ADMIN")
+
+                        // Everything else requires authentication
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions

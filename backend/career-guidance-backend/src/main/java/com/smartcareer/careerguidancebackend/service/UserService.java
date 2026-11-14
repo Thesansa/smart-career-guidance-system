@@ -1,13 +1,23 @@
 package com.smartcareer.careerguidancebackend.service;
 
-import com.smartcareer.careerguidancebackend.model.Role;
 import com.smartcareer.careerguidancebackend.model.User;
-import com.smartcareer.careerguidancebackend.repository.RoleRepository;
+import com.smartcareer.careerguidancebackend.model.Role;
+
 import com.smartcareer.careerguidancebackend.repository.UserRepository;
+import com.smartcareer.careerguidancebackend.repository.RoleRepository;
+
 import com.smartcareer.careerguidancebackend.config.JwtService;
+
+import com.smartcareer.careerguidancebackend.exceptions.*;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,11 +25,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private static final Logger logger =
+            LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;  // ✅ added
+    private RoleRepository roleRepository;
 
     @Autowired
     private JwtService jwtService;
@@ -27,70 +40,119 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+    // =========================================================
+    // USER REGISTRATION
+    // =========================================================
+
     public User saveUser(User user) {
-        System.out.println("=== REGISTRATION ATTEMPT ===");
-        System.out.println("Username: " + user.getUsername());
-        System.out.println("Email: " + user.getEmail());
-        System.out.println("Password (before encryption): " + user.getPassword());
-        System.out.println("Role: " + user.getRole().getName());
 
-        // Check for duplicate username
-        Optional<User> existingByUsername = userRepository.findByUsername(user.getUsername());
+        logger.info("Registration attempt for username: {}",
+                user.getUsername());
+
+        // 1. Validate required registration fields.
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Username is required.");
+        }
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            throw new IllegalArgumentException("Email is required.");
+        }
+
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            throw new IllegalArgumentException("Password is required.");
+        }
+
+
+        // 2. Check whether the username already exists.
+        Optional<User> existingByUsername =
+                userRepository.findByUsername(user.getUsername());
+
         if (existingByUsername.isPresent()) {
-            throw new RuntimeException("Username '" + user.getUsername() + "' already exists.");
+            throw new DuplicateResourceException(
+                    "Username already exists."
+            );
         }
 
-        // Check for duplicate email
-        Optional<User> existingByEmail = userRepository.findByEmail(user.getEmail());
+
+        // 3. Check whether the email already exists.
+        Optional<User> existingByEmail =
+                userRepository.findByEmail(user.getEmail());
+
         if (existingByEmail.isPresent()) {
-            throw new RuntimeException("Email '" + user.getEmail() + "' already exists.");
+            throw new DuplicateResourceException(
+                    "Email already exists."
+            );
         }
 
-        // ✅ Fetch existing role from DB (avoid transient instance issue)
-        Role existingRole = roleRepository.findById(user.getRole().getId())
-                .orElseThrow(() -> new RuntimeException("Role not found with ID: " + user.getRole().getId()));
-        user.setRole(existingRole);
 
-        // ✅ Encrypt password before saving
-        String encryptedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
-        System.out.println("Password (after encryption): " + user.getPassword());
+        // 4. Retrieve the STUDENT role directly from the database.
+        // Never trust role information supplied by the client.
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(() ->
+                        new RoleNotFoundException(
+                                "Required STUDENT role is not configured."
+                        )
+                );
 
+
+        // 5. Assign the trusted database role to the user.
+        user.setRole(studentRole);
+
+
+        // 6. Hash the password before storing it.
+        // Never store or log the original plaintext password.
+        String encodedPassword =
+                passwordEncoder.encode(user.getPassword());
+
+        user.setPassword(encodedPassword);
+
+
+        // 7. Persist the user.
         User savedUser = userRepository.save(user);
-        System.out.println("✅ User saved with ID: " + savedUser.getId() + " and role: " + savedUser.getRole().getName());
+
+        logger.info("User registration successful. User ID: {}",
+                savedUser.getId());
+
         return savedUser;
     }
 
+
+    // =========================================================
+    // USER LOGIN
+    // =========================================================
+
     public String loginUserAndGenerateToken(String email, String password) {
-        System.out.println("=== LOGIN ATTEMPT ===");
-        System.out.println("Email: " + email);
 
         Optional<User> existingUser = userRepository.findByEmail(email);
-        System.out.println("User found: " + existingUser.isPresent());
 
         if (existingUser.isEmpty()) {
-            System.out.println("❌ ERROR: User not found for email: " + email);
             throw new RuntimeException("Invalid email or password.");
         }
 
         User user = existingUser.get();
-        System.out.println("Username: " + user.getUsername());
-        System.out.println("Stored encrypted password: " + user.getPassword());
-        System.out.println("Input password: " + password);
 
-        boolean passwordMatches = passwordEncoder.matches(password, user.getPassword());
-        System.out.println("Password matches: " + passwordMatches);
+        // Compare the supplied password against the stored BCrypt hash.
+        boolean passwordMatches =
+                passwordEncoder.matches(password, user.getPassword());
 
         if (!passwordMatches) {
-            System.out.println("❌ ERROR: Password mismatch");
             throw new RuntimeException("Invalid email or password.");
         }
 
-        System.out.println("✅ LOGIN SUCCESSFUL for: " + user.getUsername());
+        // Generate JWT after successful authentication.
         String token = jwtService.generateToken(user);
-        System.out.println("JWT Token generated: " + token);
+
+        // Do not log passwords, password hashes or JWT tokens.
+        logger.info("Login successful for user: {}", user.getUsername());
+
         return token;
     }
+
+
+    // =========================================================
+    // EXISTING USER OPERATIONS
+    // =========================================================
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -100,12 +162,61 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public void deleteUser(Integer id) {
-        userRepository.deleteById(id);
+    public void deleteUser(Integer targetUserId, String requesterUsername) {
+
+        // 1. Find the authenticated requester in the database.
+        User requester = userRepository.findByUsername(requesterUsername)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Requesting user not found."
+                        )
+                );
+
+        // 2. Find the account that is going to be deleted.
+        User targetUser = userRepository.findById(targetUserId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found."
+                        )
+                );
+
+        // 3. Get the requester's actual role from the database.
+        String requesterRole = requester.getRole().getName();
+
+        // 4. ADMIN can delete any user, including another ADMIN.
+        if ("ADMIN".equalsIgnoreCase(requesterRole)) {
+            userRepository.delete(targetUser);
+            return;
+        }
+
+        // 5. STUDENT can only delete their own STUDENT account.
+        if ("STUDENT".equalsIgnoreCase(requesterRole)) {
+
+            boolean deletingOwnAccount =
+                    requester.getId().equals(targetUser.getId());
+
+            boolean targetIsStudent =
+                    targetUser.getRole() != null
+                            && "STUDENT".equalsIgnoreCase(
+                            targetUser.getRole().getName()
+                    );
+
+            if (deletingOwnAccount && targetIsStudent) {
+                userRepository.delete(targetUser);
+                return;
+            }
+        }
+
+        // 6. COUNSELOR and all other unauthorized cases are rejected.
+        throw new ForbiddenOperationException(
+                "You are not authorized to delete this user."
+        );
     }
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+                .orElseThrow(() ->
+                        new RuntimeException("User not found: " + username));
     }
+
 }

@@ -1,11 +1,21 @@
 package com.smartcareer.careerguidancebackend.controller;
 
-import com.smartcareer.careerguidancebackend.model.Role;
+import com.smartcareer.careerguidancebackend.dto.request.UserRegistrationRequest;
+import com.smartcareer.careerguidancebackend.dto.request.UserLoginRequest;
+
+import com.smartcareer.careerguidancebackend.dto.response.UserResponse;
+import com.smartcareer.careerguidancebackend.dto.response.JwtResponse;
+
 import com.smartcareer.careerguidancebackend.model.User;
 import com.smartcareer.careerguidancebackend.service.UserService;
-import com.smartcareer.careerguidancebackend.dto.ErrorResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
+
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,37 +30,57 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // ✅ Use a clean DTO instead of directly binding to entity
+
+    // =========================================================
+    // USER REGISTRATION
+    // =========================================================
+
     @PostMapping("/add")
-    public ResponseEntity<?> addUser(@RequestBody UserRequest userRequest) {
-        try {
-            User user = new User();
-            user.setUsername(userRequest.getUsername());
-            user.setEmail(userRequest.getEmail());
-            user.setPassword(userRequest.getPassword());
+    public ResponseEntity<UserResponse> addUser(
+            @Valid @RequestBody UserRegistrationRequest userRequest) {
 
-            Role role = new Role();
-            role.setId(userRequest.getRoleId());
-            role.setName(userRequest.getRoleName());
-            user.setRole(role);
+        // Map only the permitted registration fields.
+        User user = new User();
 
-            User savedUser = userService.saveUser(user);
-            return ResponseEntity.ok(savedUser);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ErrorResponse("Internal server error: " + e.getMessage()));
-        }
+        user.setUsername(userRequest.getUsername());
+        user.setEmail(userRequest.getEmail());
+        user.setPassword(userRequest.getPassword());
+
+        // The service independently assigns the STUDENT role.
+        User savedUser = userService.saveUser(user);
+
+        // Convert the entity into a safe response DTO.
+        UserResponse response = new UserResponse(
+                savedUser.getId(),
+                savedUser.getUsername(),
+                savedUser.getEmail(),
+                savedUser.getRole().getName()
+        );
+
+        return ResponseEntity.ok(response);
     }
+
+
+    // =========================================================
+    // USER LOGIN
+    // =========================================================
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        try {
-            String token = userService.loginUserAndGenerateToken(loginRequest.getEmail(), loginRequest.getPassword());
-            return ResponseEntity.ok(new JwtResponse(token));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
-        }
+    public ResponseEntity<JwtResponse> loginUser(
+            @RequestBody UserLoginRequest loginRequest) {
+
+        String token = userService.loginUserAndGenerateToken(
+                loginRequest.getEmail(),
+                loginRequest.getPassword()
+        );
+
+        return ResponseEntity.ok(new JwtResponse(token));
     }
+
+
+    // =========================================================
+    // EXISTING USER OPERATIONS
+    // =========================================================
 
     @GetMapping("/all")
     public List<User> getAllUsers() {
@@ -63,49 +93,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Integer id) {
-        userService.deleteUser(id);
+    public ResponseEntity<Void> deleteUser(
+            @PathVariable Integer id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        userService.deleteUser(id, userDetails.getUsername());
+
+        return ResponseEntity.noContent().build();
     }
 
-    // DTOs
-    public static class UserRequest {
-        private String username;
-        private String email;
-        private String password;
-        private Integer roleId;
-        private String roleName;
-
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-
-        public Integer getRoleId() { return roleId; }
-        public void setRoleId(Integer roleId) { this.roleId = roleId; }
-
-        public String getRoleName() { return roleName; }
-        public void setRoleName(String roleName) { this.roleName = roleName; }
-    }
-
-    public static class LoginRequest {
-        private String email;
-        private String password;
-
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
-
-    public static class JwtResponse {
-        private String token;
-
-        public JwtResponse(String token) { this.token = token; }
-        public String getToken() { return token; }
-        public void setToken(String token) { this.token = token; }
-    }
 }

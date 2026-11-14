@@ -32,5 +32,20 @@ build/
 ### VS Code ###
 .vscode/
 
-# Local backend configuration
-backend/career-guidance-backend/src/main/resources/application.properties
+# Local application configuration
+src/main/resources/application.properties
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Docker
+*.log
+
+# Build output
+target/
+
+# IDE
+.idea/
+.vscode/
