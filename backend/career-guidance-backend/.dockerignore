@@ -1,0 +1,13 @@
+
+.git
+.gitignore
+.github
+target/
+.idea/
+.vscode/
+*.log
+
+# Never include local credentials
+application.properties
+.env
+.env.*
