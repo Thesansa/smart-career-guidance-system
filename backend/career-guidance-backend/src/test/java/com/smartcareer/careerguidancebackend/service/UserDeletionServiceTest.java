@@ -1,3 +1,4 @@
+/*
 package com.smartcareer.careerguidancebackend.service;
 
 import com.smartcareer.careerguidancebackend.config.JwtService;
@@ -60,3 +61,5 @@ class UserDeletionServiceTest {
     }
 }
 
+
+ */

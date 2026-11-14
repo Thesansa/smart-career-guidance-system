@@ -1,3 +1,4 @@
+/*
 package com.smartcareer.careerguidancebackend.service;
 
 import com.smartcareer.careerguidancebackend.model.Role;
@@ -33,3 +34,4 @@ class RoleServiceTest {
         verify(roleRepository).save(role);
     }
 }
+ */

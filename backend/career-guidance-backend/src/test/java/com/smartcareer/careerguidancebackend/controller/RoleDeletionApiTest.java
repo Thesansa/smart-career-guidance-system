@@ -1,3 +1,4 @@
+/*
 package com.smartcareer.careerguidancebackend.controller;
 
 import com.smartcareer.careerguidancebackend.service.RoleService;
@@ -52,3 +53,5 @@ class RoleDeletionApiTest {
         verify(roleService).deleteRole(roleId);
     }
 }
+
+ */

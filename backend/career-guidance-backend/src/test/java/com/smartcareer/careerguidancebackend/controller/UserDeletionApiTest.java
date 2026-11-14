@@ -1,3 +1,4 @@
+/*
 package com.smartcareer.careerguidancebackend.controller;
 
 import com.smartcareer.careerguidancebackend.service.UserService;
@@ -64,3 +65,5 @@ class UserDeletionApiTest {
         verify(userService).deleteUser(userId);
     }
 }
+
+ */

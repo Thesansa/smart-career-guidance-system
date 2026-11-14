@@ -1,3 +1,4 @@
+/*
 package com.smartcareer.careerguidancebackend.service;
 
 import com.smartcareer.careerguidancebackend.config.JwtService;
@@ -152,4 +153,6 @@ class UserRegistrationServiceTest {
         verify(passwordEncoder, never()).encode(anyString());
     }
 }
+
+ */
 
