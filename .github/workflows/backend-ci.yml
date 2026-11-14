@@ -59,10 +59,11 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Run Backend Tests
-        env:
-         SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/career_guidance_db?useSSL=false&allowPublicKeyRetrieval=true
-         SPRING_DATASOURCE_USERNAME: root
-         SPRING_DATASOURCE_PASSWORD: root
-         SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-         JWT_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
         run: ./mvnw -B clean test
+        env:
+            SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/career_guidance_db?useSSL=false&allowPublicKeyRetrieval=true
+            SPRING_DATASOURCE_USERNAME: root
+            SPRING_DATASOURCE_PASSWORD: root
+            SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+            JWT_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+            
